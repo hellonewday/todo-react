@@ -1,0 +1,8 @@
+2023-11-20 11:37:05.578 [warning] Via 'product.json#extensionEnabledApiProposals' extension 'ms-dotnettools.dotnet-interactive-vscode' wants API proposal 'languageConfigurationAutoClosingPairs' but that proposal DOES NOT EXIST. Likely, the proposal has been finalized (check 'vscode.d.ts') or was abandoned.
+2023-11-20 11:37:05.613 [info] Initial editor state {"filesToOpenOrCreate":[{"fileUri":{"$mid":1,"path":"/first-app","scheme":"file"},"type":1,"exists":false}],"filesToDiff":[],"filesToMerge":[]}
+2023-11-20 11:37:08.431 [info] [perf] Render performance baseline is 17ms
+2023-11-20 11:37:23.939 [warning] [backup tracker] suspended, ignoring register event file:///first-app 
+2023-11-20 11:37:23.946 [warning] [backup tracker] suspended, ignoring dirty change event untitled:/first-app 
+2023-11-20 11:37:23.951 [warning] [backup tracker] suspended, ignoring unregister event untitled:/first-app 
+2023-11-20 11:37:24.279 [warning] Via 'product.json#extensionEnabledApiProposals' extension 'ms-dotnettools.dotnet-interactive-vscode' wants API proposal 'languageConfigurationAutoClosingPairs' but that proposal DOES NOT EXIST. Likely, the proposal has been finalized (check 'vscode.d.ts') or was abandoned.
+2023-11-20 11:37:27.128 [info] [perf] Render performance baseline is 23ms
