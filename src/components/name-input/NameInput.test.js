@@ -15,8 +15,8 @@ describe("NameInput component", () => {
   });
 
   test("test input validation", () => {
-    const { container } = render(<NameInput />);
-
+    const { container } = render(<NameInput/>);
+    
     const input = screen.getByRole("textbox");
     const submitElement = screen.getByRole("button", {
       name: /create/i,

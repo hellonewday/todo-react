@@ -8,7 +8,7 @@ describe("App component", () => {
     const submitElement = screen.getByRole("button", {
       name: /create/i,
     });
-
+    
     fireEvent.change(input, { target: { value: "hello world" } });
     fireEvent.click(submitElement);
 
