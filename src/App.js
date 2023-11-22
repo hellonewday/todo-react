@@ -1,26 +1,13 @@
-import logo from "./logo.svg";
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import NameInput from "./components/name-input/NameInput";
 import ListPlaceHolder from "./components/list-placeholder/LIstPlaceHolder";
 import ListCompleted from "./components/list-completed/LIstCompleted";
 
 function App() {
   const [data, setData] = useState([]);
-  const [isEdit, setEdit] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const [editValue, setEditValue] = useState({});
-  useEffect(() => {
-    // fetch("https://jsonplaceholder.typicode.com/todos")
-    //   .then((response) => response.json())
-    //   .then((json) => {
-    //     let res = json
-    //       .map((item) => {
-    //         return item;
-    //       })
-    //       .slice(0, 5);
-    //     setData(res);
-    //   });
-  }, []);
 
   const onDelete = (id) => {
     console.log("delete", id);
@@ -37,7 +24,7 @@ function App() {
   };
 
   const onEdit = (id) => {
-    setEdit(true);
+    setIsEdit(true);
     let editVal = data.filter((item) => item.id === id)[0];
     setEditValue(editVal);
     console.log(editVal);
@@ -51,7 +38,7 @@ function App() {
     event.preventDefault();
     console.log(editValue);
     let newData = data.filter((item) => item.id !== editValue.id);
-    setEdit(false);
+    setIsEdit(false);
     setData([...newData, editValue]);
   };
 
@@ -78,7 +65,7 @@ function App() {
         <h1 style={{ color: "green" }}>Completed tasks:</h1>
         <ListCompleted data={data.filter((item) => item.completed === true)} />
 
-        <h1 style={{ color: "red" }}>Incompleted tasks:</h1>
+        <h1 style={{ color: "red" }}>Uncompleted tasks:</h1>
 
         <ListPlaceHolder
           data={data.filter((item) => item.completed === false)}

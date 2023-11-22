@@ -1,4 +1,5 @@
-function ListPlaceHolder({ data, onDelete, onComplete, onEdit }) {
+function ListPlaceHolder(prop) {
+  const { data, onDelete, onComplete, onEdit } = prop;
   return (
     <div>
       {data &&

@@ -1,4 +1,5 @@
-function ListCompleted({ data }) {
+function ListCompleted(prop) {
+  const { data } = prop;
   return (
     <div>
       {data &&

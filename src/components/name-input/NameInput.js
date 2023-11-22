@@ -1,7 +1,8 @@
 import { useState } from "react";
 
-function NameInput({ saveHandler }) {
-  const [isInvalid, setInvalid] = useState(false);
+function NameInput(prop) {
+  const { saveHandler } = prop;
+  const [isInvalid, setIsInvalid] = useState(false);
   const [input, setInput] = useState("");
 
   const onChange = (event) => {
@@ -11,10 +12,10 @@ function NameInput({ saveHandler }) {
   const onSave = (event) => {
     event.preventDefault();
     if (input.length < 3) {
-      setInvalid(true);
+      setIsInvalid(true);
     } else {
       setInput("");
-      setInvalid(false);
+      setIsInvalid(false);
       saveHandler(input);
     }
   };
