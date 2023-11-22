@@ -1,7 +1,7 @@
 import "./App.css";
 import { useState } from "react";
 import NameInput from "./components/name-input/NameInput";
-import ListPlaceHolder from "./components/list-placeholder/LIstPlaceHolder";
+import ListPlaceHolder from "./components/list-placeholder/ListPlaceHolder";
 import ListCompleted from "./components/list-completed/LIstCompleted";
 
 function App() {
@@ -10,13 +10,11 @@ function App() {
   const [editValue, setEditValue] = useState({});
 
   const onDelete = (id) => {
-    console.log("delete", id);
     let newData = data.filter((item) => item.id !== id);
     setData(newData);
   };
 
   const onCompleted = (id) => {
-    console.log("completed", id);
     let completedData = data.filter((item) => item.id === id)[0];
     completedData.completed = true;
     let newData = data.filter((item) => item.id !== id);
@@ -27,7 +25,6 @@ function App() {
     setIsEdit(true);
     let editVal = data.filter((item) => item.id === id)[0];
     setEditValue(editVal);
-    console.log(editVal);
   };
 
   const onEditChange = (event) => {
@@ -36,10 +33,13 @@ function App() {
 
   const onEditSave = (event) => {
     event.preventDefault();
-    console.log(editValue);
+
     let newData = data.filter((item) => item.id !== editValue.id);
+    let saveData = [...newData, editValue].sort(
+      (prev, next) => prev.id - next.id
+    );
     setIsEdit(false);
-    setData([...newData, editValue]);
+    setData(saveData);
   };
 
   const saveHandler = (input) => {
@@ -48,32 +48,51 @@ function App() {
 
   return (
     <div className="App">
-      <h1>My App</h1>
+      <h1 className="text-5xl font-bold mb-4 py-5 text-center">To do list</h1>
       <header className="App-header">
-        {isEdit && (
-          <div>
-            <label>Edit:</label>
-            <input
-              type="text"
-              className="edit-box"
-              value={editValue.title}
-              onChange={onEditChange}
+        <div className="create-container flex flex-row justify-center">
+          <NameInput saveHandler={saveHandler} />
+        </div>
+
+        <div className="list-container flex flex-col py-2 px-4">
+          <div className="uncompleted-container mr-52 py-3">
+            <h1 style={{ color: "red" }}>1. Uncompleted tasks:</h1>
+
+            <div className="edit-container">
+              {isEdit && (
+                <div>
+                  <input
+                    type="text"
+                    className="edit-box"
+                    value={editValue.title}
+                    onChange={onEditChange}
+                  />
+                  <button onClick={onEditSave}>Save</button>
+                </div>
+              )}
+            </div>
+
+            <ListPlaceHolder
+              data={data.filter((item) => item.completed === false)}
+              onDelete={onDelete}
+              listType="uncompleted"
+              onComplete={onCompleted}
+              onEdit={onEdit}
             />
-            <button onClick={onEditSave}>Save</button>
           </div>
-        )}
-        <h1 style={{ color: "green" }}>Completed tasks:</h1>
-        <ListCompleted data={data.filter((item) => item.completed === true)} />
 
-        <h1 style={{ color: "red" }}>Uncompleted tasks:</h1>
+          <div className="completed-container mr-52 py-4">
+            <h1 style={{ color: "green" }}>2. Completed tasks:</h1>
 
-        <ListPlaceHolder
-          data={data.filter((item) => item.completed === false)}
-          onDelete={onDelete}
-          onComplete={onCompleted}
-          onEdit={onEdit}
-        />
-        <NameInput saveHandler={saveHandler} />
+            <ListPlaceHolder
+              data={data.filter((item) => item.completed === true)}
+              onDelete={onDelete}
+              listType="completed"
+              onComplete={onCompleted}
+              onEdit={onEdit}
+            />
+          </div>
+        </div>
       </header>
     </div>
   );

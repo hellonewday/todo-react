@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import ListPlaceHolder from "./LIstPlaceHolder";
+import ListPlaceHolder from "./ListPlaceHolder";
 
 describe("List PlaceHolder", () => {
   test("render component UI", () => {
