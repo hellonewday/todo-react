@@ -25,19 +25,6 @@ function App() {
     localStorage.setItem("data", JSON.stringify(todos));
   }, [todos]);
 
-  const onDelete = (id) => {
-    dispatch(removeTodo(id));
-  };
-
-  const onCompleted = (id) => {
-    dispatch(completeTodo(id));
-  };
-
-  const onCreateSave = (event) => {
-    event.preventDefault();
-    dispatch(addTodo({ id: todos.length + 1, title: value, completed: false }));
-  };
-
   const onCreateChange = (event) => {
     setValue(event.target.value);
   };
@@ -50,6 +37,19 @@ function App() {
 
   const onEditChange = (event) => {
     setEditValue({ ...editValue, title: event.target.value });
+  };
+
+  const onDelete = (id) => {
+    dispatch(removeTodo(id));
+  };
+
+  const onCompleted = (id) => {
+    dispatch(completeTodo(id));
+  };
+
+  const onCreateSave = (event) => {
+    event.preventDefault();
+    dispatch(addTodo({ id: todos.length + 1, title: value, completed: false }));
   };
 
   const onEditSave = (event) => {
@@ -77,7 +77,7 @@ function App() {
             <h1 style={{ color: "red" }}>1. Uncompleted tasks:</h1>
 
             <div className="edit-container">
-              {isEdit && (
+              {(isEdit || isEditInvalid) && (
                 <NameInput
                   saveHandler={onEditSave}
                   buttonName="Save"
