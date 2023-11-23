@@ -1,29 +1,50 @@
 import "./App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NameInput from "./components/name-input/NameInput";
 import ListPlaceHolder from "./components/list-placeholder/ListPlaceHolder";
-import ListCompleted from "./components/list-completed/LIstCompleted";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addTodo,
+  completeTodo,
+  editTodo,
+  removeTodo,
+} from "./redux/reducers/todos";
 
 function App() {
-  const [data, setData] = useState([]);
+  const dispatch = useDispatch();
+  const { todos, isInvalid, isEditInvalid } = useSelector(
+    (state) => state.todos
+  );
+
   const [isEdit, setIsEdit] = useState(false);
   const [editValue, setEditValue] = useState({});
 
+  const [value, setValue] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("data", JSON.stringify(todos));
+  }, [todos]);
+
   const onDelete = (id) => {
-    let newData = data.filter((item) => item.id !== id);
-    setData(newData);
+    dispatch(removeTodo(id));
   };
 
   const onCompleted = (id) => {
-    let completedData = data.filter((item) => item.id === id)[0];
-    completedData.completed = true;
-    let newData = data.filter((item) => item.id !== id);
-    setData([...newData, completedData]);
+    dispatch(completeTodo(id));
+  };
+
+  const onCreateSave = (event) => {
+    event.preventDefault();
+    dispatch(addTodo({ id: todos.length + 1, title: value, completed: false }));
+  };
+
+  const onCreateChange = (event) => {
+    setValue(event.target.value);
   };
 
   const onEdit = (id) => {
     setIsEdit(true);
-    let editVal = data.filter((item) => item.id === id)[0];
+    let editVal = todos.filter((item) => item.id === id)[0];
     setEditValue(editVal);
   };
 
@@ -33,17 +54,8 @@ function App() {
 
   const onEditSave = (event) => {
     event.preventDefault();
-
-    let newData = data.filter((item) => item.id !== editValue.id);
-    let saveData = [...newData, editValue].sort(
-      (prev, next) => prev.id - next.id
-    );
+    dispatch(editTodo(editValue));
     setIsEdit(false);
-    setData(saveData);
-  };
-
-  const saveHandler = (input) => {
-    setData([...data, { id: data.length + 1, title: input, completed: false }]);
   };
 
   return (
@@ -51,7 +63,13 @@ function App() {
       <h1 className="text-5xl font-bold mb-4 py-5 text-center">To do list</h1>
       <header className="App-header">
         <div className="create-container flex flex-row justify-center">
-          <NameInput saveHandler={saveHandler} />
+          <NameInput
+            saveHandler={onCreateSave}
+            buttonName="Add Task"
+            value={value}
+            onChange={onCreateChange}
+            invalid={isInvalid}
+          />
         </div>
 
         <div className="list-container flex flex-col py-2 px-4">
@@ -60,20 +78,18 @@ function App() {
 
             <div className="edit-container">
               {isEdit && (
-                <div>
-                  <input
-                    type="text"
-                    className="edit-box"
-                    value={editValue.title}
-                    onChange={onEditChange}
-                  />
-                  <button onClick={onEditSave}>Save</button>
-                </div>
+                <NameInput
+                  saveHandler={onEditSave}
+                  buttonName="Save"
+                  value={editValue.title}
+                  onChange={onEditChange}
+                  invalid={isEditInvalid}
+                />
               )}
             </div>
 
             <ListPlaceHolder
-              data={data.filter((item) => item.completed === false)}
+              data={todos.filter((item) => item.completed === false)}
               onDelete={onDelete}
               listType="uncompleted"
               onComplete={onCompleted}
@@ -81,11 +97,11 @@ function App() {
             />
           </div>
 
-          <div className="completed-container mr-52 py-4">
+          <div className="completed-container mr-52 py-3">
             <h1 style={{ color: "green" }}>2. Completed tasks:</h1>
 
             <ListPlaceHolder
-              data={data.filter((item) => item.completed === true)}
+              data={todos.filter((item) => item.completed === true)}
               onDelete={onDelete}
               listType="completed"
               onComplete={onCompleted}
