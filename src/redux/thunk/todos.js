@@ -43,7 +43,6 @@ export const removeTodo = createAsyncThunk(REMOVE_TODO, async (id) => {
 
 export const editTodo = createAsyncThunk(EDIT_TODO, async (editTodo) => {
   try {
-    console.log(editTodo.id, editTodo);
     const responseData = await editTodoAPI(editTodo.id, editTodo);
     return responseData;
   } catch (error) {

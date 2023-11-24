@@ -59,7 +59,6 @@ function App() {
   };
 
   const onCompleted = (id) => {
-    console.log(id);
     dispatch(completeTodo(id));
   };
 
