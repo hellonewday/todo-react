@@ -6,6 +6,7 @@ import {
   fetchTodos,
   removeTodo,
 } from "../thunk/todos";
+import { fireToast } from "../../utils/toast.utils";
 
 export const todosReducer = createSlice({
   name: "todos",
@@ -17,10 +18,10 @@ export const todosReducer = createSlice({
   },
   reducers: {
     validateCreate: (state, action) => {
-      state.isInvalid = !state.isInvalid;
+      state.isInvalid = action.payload;
     },
     validateEdit: (state, action) => {
-      state.isEditInvalid = !state.isEditInvalid;
+      state.isEditInvalid = action.payload;
     },
     resetStatus: (state, action) => {
       state.apiStatus = "idle";
@@ -44,9 +45,11 @@ export const todosReducer = createSlice({
       .addCase(addTodo.fulfilled, (state, action) => {
         state.todos = [...state.todos, action.payload.data];
         state.apiStatus = "fulfilled";
+        fireToast("success", "Create task successfully", "colored");
       })
       .addCase(addTodo.rejected, (state, action) => {
         state.apiStatus = "error";
+        fireToast("error", "Create task failed", "colored");
       })
       .addCase(removeTodo.pending, (state, action) => {
         state.apiStatus = "loading";
@@ -56,6 +59,7 @@ export const todosReducer = createSlice({
           (todo) => todo.id !== action.payload.id
         );
         state.apiStatus = "fulfilled";
+        fireToast("info", "Delete task successfully", "light");
       })
       .addCase(removeTodo.rejected, (state, action) => {
         state.apiStatus = "rejected";
@@ -70,6 +74,8 @@ export const todosReducer = createSlice({
         if (updateTodo) {
           updateTodo.title = action.payload.title;
         }
+        state.apiStatus = "fulfilled";
+        fireToast("info", "Update task successfully", "colored");
       })
       .addCase(editTodo.rejected, (state, action) => {
         state.apiStatus = "error";
@@ -85,6 +91,7 @@ export const todosReducer = createSlice({
           updateTodo.completed = action.payload.completed;
         }
         state.apiStatus = "fulfilled";
+        fireToast("success", "Update task successfully", "light");
       })
       .addCase(completeTodo.rejected, (state, action) => {
         state.apiStatus = "error";

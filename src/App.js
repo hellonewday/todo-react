@@ -10,37 +10,16 @@ import {
   fetchTodos,
   removeTodo,
 } from "./redux/thunk/todos";
-import {resetStatus} from "./redux/reducers/todos";
-
-function generateApiMessage(message) {
-  if (message === "pending") {
-    return (
-      <p className="text-xl font-bold mb-4 py-5 text-blue-600 text-center">
-        Loading...
-      </p>
-    );
-  }
-  if (message === "fulfilled") {
-    return (
-      <p className="text-xl font-bold mb-4 py-5 text-green-600 text-center">
-        Successful!
-      </p>
-    );
-  }
-  if (message === "error") {
-    return (
-      <p className="text-xl font-bold mb-4 py-5 text-green-600 text-center">
-        Error!
-      </p>
-    );
-  } else {
-    return <></>;
-  }
-}
+import {
+  resetStatus,
+  validateCreate,
+  validateEdit,
+} from "./redux/reducers/todos";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const dispatch = useDispatch();
-  const { todos, isInvalid, isEditInvalid, apiStatus } = useSelector(
+  const { todos, isInvalid, isEditInvalid } = useSelector(
     (state) => state.todos
   );
 
@@ -86,21 +65,30 @@ function App() {
 
   const onCreateSave = (event) => {
     event.preventDefault();
-    dispatch(addTodo({ title: value }));
+    if (value.length < 3) {
+      dispatch(validateCreate(true));
+    } else {
+      dispatch(validateCreate(false));
+      dispatch(addTodo({ title: value }));
+    }
   };
 
   const onEditSave = (event) => {
     event.preventDefault();
-    dispatch(editTodo({ id: editValue.id, title: editValue.title }));
-    setIsEdit(false);
-  };
 
+    if (editValue.title.length < 3) {
+      dispatch(validateEdit(true));
+    } else {
+      dispatch(validateEdit(false));
+      dispatch(editTodo({ id: editValue.id, title: editValue.title }));
+      setIsEdit(false);
+    }
+  };
   return (
     <div className="App">
       <h1 className="text-5xl font-bold mb-4 py-5 text-center">To do list</h1>
-      {generateApiMessage(apiStatus)}
       <header className="App-header">
-        <div className="create-container flex flex-row justify-center">
+        <div className="create-container">
           <NameInput
             saveHandler={onCreateSave}
             buttonName="Add Task"
@@ -151,6 +139,7 @@ function App() {
               onEdit={onEdit}
             />
           </div>
+          <ToastContainer />
         </div>
       </header>
     </div>
