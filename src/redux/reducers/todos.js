@@ -1,48 +1,98 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-const getIntialState = () => {
-  let historyData = localStorage.getItem("data");
-  return historyData ? JSON.parse(historyData) : [];
-};
+import {
+  addTodo,
+  completeTodo,
+  editTodo,
+  fetchTodos,
+  removeTodo,
+} from "../thunk/todos";
 
 export const todosReducer = createSlice({
   name: "todos",
   initialState: {
-    todos: getIntialState(),
+    todos: [],
     isInvalid: false,
     isEditInvalid: false,
+    apiStatus: "idle",
   },
   reducers: {
-    addTodo: (state, action) => {
-      if (action.payload.title.length < 3) state.isInvalid = true;
-      else {
-        state.todos = [...state.todos, action.payload];
-        state.isInvalid = false;
-      }
+    validateCreate: (state, action) => {
+      state.isInvalid = !state.isInvalid;
     },
-    removeTodo: (state, action) => {
-      state.todos = state.todos.filter((todo) => todo.id !== action.payload);
+    validateEdit: (state, action) => {
+      state.isEditInvalid = !state.isEditInvalid;
     },
-    editTodo: (state, action) => {
-      if (action.payload.title.length < 3) state.isEditInvalid = true;
-      else {
+    resetStatus: (state, action) => {
+      state.apiStatus = "idle";
+    },
+  },
+  extraReducers(builder) {
+    builder
+      .addCase(fetchTodos.pending, (state, action) => {
+        state.apiStatus = "loading";
+      })
+      .addCase(fetchTodos.fulfilled, (state, action) => {
+        state.apiStatus = "idle";
+        state.todos = action.payload;
+      })
+      .addCase(fetchTodos.rejected, (state, action) => {
+        state.apiStatus = "error";
+      })
+      .addCase(addTodo.pending, (state, action) => {
+        state.apiStatus = "loading";
+      })
+      .addCase(addTodo.fulfilled, (state, action) => {
+        state.todos = [...state.todos, action.payload.data];
+        state.apiStatus = "fulfilled";
+      })
+      .addCase(addTodo.rejected, (state, action) => {
+        state.apiStatus = "error";
+      })
+      .addCase(removeTodo.pending, (state, action) => {
+        state.apiStatus = "loading";
+      })
+      .addCase(removeTodo.fulfilled, (state, action) => {
+        state.todos = state.todos.filter(
+          (todo) => todo.id !== action.payload.id
+        );
+        state.apiStatus = "fulfilled";
+      })
+      .addCase(removeTodo.rejected, (state, action) => {
+        state.apiStatus = "rejected";
+      })
+      .addCase(editTodo.pending, (state, action) => {
+        state.apiStatus = "pending";
+      })
+      .addCase(editTodo.fulfilled, (state, action) => {
         let updateTodo = state.todos.find(
           (todo) => todo.id === action.payload.id
         );
         if (updateTodo) {
           updateTodo.title = action.payload.title;
-          state.isEditInvalid = false;
         }
-      }
-    },
-    completeTodo: (state, action) => {
-      let updateTodo = state.todos.find((todo) => todo.id === action.payload);
-      if (updateTodo) updateTodo.completed = true;
-    },
+      })
+      .addCase(editTodo.rejected, (state, action) => {
+        state.apiStatus = "error";
+      })
+      .addCase(completeTodo.pending, (state, action) => {
+        state.apiStatus = "pending";
+      })
+      .addCase(completeTodo.fulfilled, (state, action) => {
+        let updateTodo = state.todos.find(
+          (todo) => todo.id === action.payload.id
+        );
+        if (updateTodo) {
+          updateTodo.completed = action.payload.completed;
+        }
+        state.apiStatus = "fulfilled";
+      })
+      .addCase(completeTodo.rejected, (state, action) => {
+        state.apiStatus = "error";
+      });
   },
 });
 
-export const { addTodo, removeTodo, editTodo, completeTodo } =
+export const { validateCreate, validateEdit, resetStatus } =
   todosReducer.actions;
 
 export default todosReducer.reducer;

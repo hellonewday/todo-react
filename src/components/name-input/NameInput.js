@@ -2,7 +2,7 @@ function NameInput(prop) {
   const { saveHandler, buttonName, invalid, onChange, value} = prop;
 
   return (
-    <div>
+    <>
       <div className="mt-6 mb-2">
         <input
           className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -17,13 +17,14 @@ function NameInput(prop) {
         >
           {buttonName}
         </button>
+
       </div>
       {invalid && (
         <span className="text-sm px-1 py-1 text-red-500 font-bold">
           Invalid input
         </span>
       )}
-    </div>
+    </>
   );
 }
 

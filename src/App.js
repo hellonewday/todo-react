@@ -7,12 +7,40 @@ import {
   addTodo,
   completeTodo,
   editTodo,
+  fetchTodos,
   removeTodo,
-} from "./redux/reducers/todos";
+} from "./redux/thunk/todos";
+import {resetStatus} from "./redux/reducers/todos";
+
+function generateApiMessage(message) {
+  if (message === "pending") {
+    return (
+      <p className="text-xl font-bold mb-4 py-5 text-blue-600 text-center">
+        Loading...
+      </p>
+    );
+  }
+  if (message === "fulfilled") {
+    return (
+      <p className="text-xl font-bold mb-4 py-5 text-green-600 text-center">
+        Successful!
+      </p>
+    );
+  }
+  if (message === "error") {
+    return (
+      <p className="text-xl font-bold mb-4 py-5 text-green-600 text-center">
+        Error!
+      </p>
+    );
+  } else {
+    return <></>;
+  }
+}
 
 function App() {
   const dispatch = useDispatch();
-  const { todos, isInvalid, isEditInvalid } = useSelector(
+  const { todos, isInvalid, isEditInvalid, apiStatus } = useSelector(
     (state) => state.todos
   );
 
@@ -22,8 +50,12 @@ function App() {
   const [value, setValue] = useState("");
 
   useEffect(() => {
-    localStorage.setItem("data", JSON.stringify(todos));
-  }, [todos]);
+    dispatch(fetchTodos());
+
+    return () => {
+      dispatch(resetStatus());
+    };
+  }, [dispatch]);
 
   const onCreateChange = (event) => {
     setValue(event.target.value);
@@ -39,28 +71,34 @@ function App() {
     setEditValue({ ...editValue, title: event.target.value });
   };
 
+  const cancelEdit = () => {
+    setIsEdit(false);
+  };
+
   const onDelete = (id) => {
     dispatch(removeTodo(id));
   };
 
   const onCompleted = (id) => {
+    console.log(id);
     dispatch(completeTodo(id));
   };
 
   const onCreateSave = (event) => {
     event.preventDefault();
-    dispatch(addTodo({ id: todos.length + 1, title: value, completed: false }));
+    dispatch(addTodo({ title: value }));
   };
 
   const onEditSave = (event) => {
     event.preventDefault();
-    dispatch(editTodo(editValue));
+    dispatch(editTodo({ id: editValue.id, title: editValue.title }));
     setIsEdit(false);
   };
 
   return (
     <div className="App">
       <h1 className="text-5xl font-bold mb-4 py-5 text-center">To do list</h1>
+      {generateApiMessage(apiStatus)}
       <header className="App-header">
         <div className="create-container flex flex-row justify-center">
           <NameInput
@@ -71,13 +109,12 @@ function App() {
             invalid={isInvalid}
           />
         </div>
-
         <div className="list-container flex flex-col py-2 px-4">
           <div className="uncompleted-container mr-52 py-3">
             <h1 style={{ color: "red" }}>1. Uncompleted tasks:</h1>
 
-            <div className="edit-container">
-              {(isEdit || isEditInvalid) && (
+            {(isEdit || isEditInvalid) && (
+              <div className="edit-container">
                 <NameInput
                   saveHandler={onEditSave}
                   buttonName="Save"
@@ -85,8 +122,14 @@ function App() {
                   onChange={onEditChange}
                   invalid={isEditInvalid}
                 />
-              )}
-            </div>
+                <button
+                  onClick={cancelEdit}
+                  className="mt-6 mb-2 px-4 text-red-500"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
 
             <ListPlaceHolder
               data={todos.filter((item) => item.completed === false)}
