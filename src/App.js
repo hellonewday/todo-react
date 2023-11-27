@@ -18,6 +18,8 @@ import {
   validateCreate,
   validateEdit,
 } from "./redux/reducers/todos";
+import CreatePopup from "./components/create-popup";
+import Navbar from "./components/common/Navbar";
 
 function App() {
   const dispatch = useDispatch();
@@ -96,66 +98,79 @@ function App() {
     }
   };
   return (
-    <div className="App">
-      <h1 className="text-5xl font-bold mb-4 py-5 text-center">To do list</h1>
-      <header className="App-header">
-        <div className="create-container">
-          <NameInput
-            saveHandler={onCreateSave}
-            buttonName="Add Task"
-            value={value}
-            onChange={onCreateChange}
-            isFormInvalid={isInvalid}
-          ></NameInput>
-        </div>
-        <div className="list-container flex flex-col py-2 px-4">
-          <div className="uncompleted-container mr-52 py-3">
-            <h1 className="text-red-400 font-bold	">1. Uncompleted tasks:</h1>
+    <div>
+      <Navbar />
+      <div className="App container mx-auto">
+        <header className="App-header">
+          {/* <div className="create-container">
+            <NameInput
+              saveHandler={onCreateSave}
+              buttonName="Add Task"
+              value={value}
 
-            {isEdit && (
-              <div className="mb-2">
-                <div className="edit-container space-x-2">
-                  <NameInput
-                    saveHandler={onEditSave}
-                    buttonName="Save"
-                    value={editValue.title}
-                    onChange={onEditChange}
-                    isFormInvalid={isEditInvalid}
-                  >
-                    <button
-                      onClick={cancelEdit}
-                      className="py-1 mt-2 px-4 bg-red-500 rounded-md text-white hover:bg-red-600"
+              onChange={onCreateChange}
+              isFormInvalid={isInvalid}
+            ></NameInput>
+          </div> */}
+          <div className="list-container flex flex-col py-2 px-4">
+            <CreatePopup />
+
+            <div className="mb-3 mt-2 pt-0">
+              <input
+                type="text"
+                placeholder="Search"
+                className="px-3 py-4 placeholder-blueGray-300 border border-gray-100 text-blueGray-600 relative bg-white rounded text-base shadow outline-none focus:outline-none focus:ring w-full"
+              />
+            </div>
+
+            <div className="uncompleted-container py-3">
+              <h1 className="text-red-400 font-bold	">1. Uncompleted tasks:</h1>
+
+              {isEdit && (
+                <div className="mb-2">
+                  <div className="edit-container space-x-2">
+                    <NameInput
+                      saveHandler={onEditSave}
+                      buttonName="Save"
+                      value={editValue.title}
+                      onChange={onEditChange}
+                      isFormInvalid={isEditInvalid}
                     >
-                      Cancel
-                    </button>
-                  </NameInput>
+                      <button
+                        onClick={cancelEdit}
+                        className="py-1 mt-2 px-4 bg-red-500 rounded-md text-white hover:bg-red-600"
+                      >
+                        Cancel
+                      </button>
+                    </NameInput>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            <ListPlaceHolder
-              data={todos.filter((item) => item.completed === false)}
-              onDelete={onDelete}
-              listType="uncompleted"
-              onComplete={onCompleted}
-              onEdit={onEdit}
-            />
+              <ListPlaceHolder
+                data={todos.filter((item) => item.completed === false)}
+                onDelete={onDelete}
+                listType="uncompleted"
+                onComplete={onCompleted}
+                onEdit={onEdit}
+              />
+            </div>
+
+            <div className="completed-container py-3">
+              <h1 className="text-green-500 font-bold	">2. Completed tasks:</h1>
+
+              <ListPlaceHolder
+                data={todos.filter((item) => item.completed === true)}
+                onDelete={onDelete}
+                listType="completed"
+                onComplete={onCompleted}
+                onEdit={onEdit}
+              />
+            </div>
+            <ToastContainer />
           </div>
-
-          <div className="completed-container mr-52 py-3">
-            <h1 className="text-green-500 font-bold	">2. Completed tasks:</h1>
-
-            <ListPlaceHolder
-              data={todos.filter((item) => item.completed === true)}
-              onDelete={onDelete}
-              listType="completed"
-              onComplete={onCompleted}
-              onEdit={onEdit}
-            />
-          </div>
-          <ToastContainer />
-        </div>
-      </header>
+        </header>
+      </div>
     </div>
   );
 }

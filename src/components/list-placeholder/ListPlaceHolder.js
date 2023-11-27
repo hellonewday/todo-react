@@ -13,11 +13,11 @@ function ListPlaceHolder(prop) {
           {data.map((task) => (
             <tr key={task.id} className="border">
               <td className="border px-4 py-2 break-all">{task.title}</td>
-              <td className="border px-4 py-2 flex space-x-2">
+              <td className="border px-4 py-2">
                 {listType === "uncompleted" ? (
-                  <>
+                  <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
                     <button
-                      className="delete text-white bg-blue-500 rounded-md mt-2 px-4 py-2"
+                      className="delete text-white bg-blue-500 rounded-md px-4 py-2"
                       onClick={() => onEdit(task.id)}
                     >
                       Edit
@@ -34,7 +34,7 @@ function ListPlaceHolder(prop) {
                     >
                       Delete
                     </button>
-                  </>
+                  </div>
                 ) : (
                   <button
                     className="complete text-white bg-red-500 rounded-md mt-2 px-4 py-2"
