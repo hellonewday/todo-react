@@ -2,10 +2,11 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import Swal from "sweetalert2";
+import { useDispatch, useSelector } from "react-redux";
+
 
 import NameInput from "./components/name-input/NameInput";
 import ListPlaceHolder from "./components/list-placeholder/ListPlaceHolder";
-import { useDispatch, useSelector } from "react-redux";
 import {
   addTodo,
   completeTodo,
@@ -115,7 +116,7 @@ function App() {
         </div>
         <div className="list-container flex flex-col py-2 px-4">
           <div className="uncompleted-container mr-52 py-3">
-            <h1 className="text-red-400">1. Uncompleted tasks:</h1>
+            <h1 className="text-red-400 font-bold	">1. Uncompleted tasks:</h1>
 
             {isEdit && (
               <div className="mb-2">
@@ -151,7 +152,7 @@ function App() {
           </div>
 
           <div className="completed-container mr-52 py-3">
-            <h1 className="text-green-400">2. Completed tasks:</h1>
+            <h1 className="text-green-500 font-bold	">2. Completed tasks:</h1>
 
             <ListPlaceHolder
               data={todos.filter((item) => item.completed === true)}

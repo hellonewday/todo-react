@@ -5,7 +5,7 @@ function NameInput(prop) {
     <div className="space-x-2">
       <input
         className="shadow appearance-none border rounded py-1 px-2 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        placeholder="Your new task..."
+        placeholder="Write something..."
         type="text"
         onChange={onChange}
         value={value}
