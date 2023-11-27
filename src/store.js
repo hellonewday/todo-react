@@ -1,11 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import todosReducer from "./redux/reducers/todos";
 
-export const setUpStore = (preloadState) => {
+export const setUpStore = () => {
   return configureStore({
     reducer: {
-      todos: todosReducer,
-      preloadState,
+      todos: todosReducer
     },
   });
 };
