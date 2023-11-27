@@ -53,6 +53,7 @@ function App() {
 
   const cancelEdit = () => {
     setIsEdit(false);
+    dispatch(validateEdit(false));
   };
 
   const onDelete = (id, title) => {
@@ -108,7 +109,7 @@ function App() {
 
           {isInvalid && (
             <span className="text-sm px-1 py-1 text-red-500 font-bold">
-              Invalid input
+              Task name must be above 3 characters.
             </span>
           )}
         </div>
@@ -116,9 +117,9 @@ function App() {
           <div className="uncompleted-container mr-52 py-3">
             <h1 className="text-red-400">1. Uncompleted tasks:</h1>
 
-            {(isEdit || isEditInvalid) && (
-              <>
-                <div className="edit-container mb-2 space-x-2">
+            {isEdit && (
+              <div className="mb-2">
+                <div className="edit-container space-x-2">
                   <NameInput
                     saveHandler={onEditSave}
                     buttonName="Save"
@@ -134,10 +135,10 @@ function App() {
                 </div>
                 {isEditInvalid && (
                   <span className="text-sm px-1 py-1 text-red-500 font-bold">
-                    Invalid input
+                    Task name must be above 3 characters.
                   </span>
                 )}
-              </>
+              </div>
             )}
 
             <ListPlaceHolder
