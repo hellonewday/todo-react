@@ -28,7 +28,6 @@
   }
 }
 
-
 .edit-container {
   display: flex;
   align-items: center;
@@ -40,6 +39,7 @@
 
 .tasks-col {
   width: 80%;
+  text-align: left;
 }
 
 .actions-col {
