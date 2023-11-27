@@ -38,8 +38,13 @@
 }
 
 .tasks-col {
-  width: 80%;
+  width: 50%;
   text-align: left;
+}
+
+.progress-col {
+  text-align: left;
+  width: 30%;
 }
 
 .actions-col {

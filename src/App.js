@@ -29,6 +29,7 @@ function App() {
 
   const [isEdit, setIsEdit] = useState(false);
   const [editValue, setEditValue] = useState({});
+  // const [showModal, setShowModal] = useState(false);
 
   const [value, setValue] = useState("");
 
@@ -40,7 +41,7 @@ function App() {
   }, [dispatch]);
 
   const onCreateChange = (event) => {
-    setValue(event.target.value);
+    setValue({ ...value, [event.target.name]: event.target.value });
   };
 
   const onEdit = (id) => {
@@ -73,16 +74,18 @@ function App() {
   };
 
   const onCompleted = (id) => {
+    setIsEdit(false);
     dispatch(completeTodo(id));
   };
 
   const onCreateSave = (event) => {
     event.preventDefault();
-    if (value.length < 3) {
+    if (value.title.length < 3) {
       dispatch(validateCreate(true));
     } else {
       dispatch(validateCreate(false));
-      dispatch(addTodo({ title: value }));
+      console.log(value);
+      dispatch(addTodo(value));
     }
   };
 
@@ -113,7 +116,12 @@ function App() {
             ></NameInput>
           </div> */}
           <div className="list-container flex flex-col py-2 px-4">
-            <CreatePopup />
+            <CreatePopup
+              onCreateSave={onCreateSave}
+              titleValue={value}
+              onChange={onCreateChange}
+              isFormInvalid={isInvalid}
+            />
 
             <div className="mb-3 mt-2 pt-0">
               <input
