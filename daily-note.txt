@@ -1,0 +1,8 @@
++ Kiểm tra edit, bất kể có action gì (complete, create), cần phải loại bỏ state isEdit
++ xóa apis/constants
++ naming hàm validate => setValidate
++ Nên để setValidate ở local
++ Sửa lại để khi edit thì xác định nó edit ở hàng nào, để không bị duplicate với các task khác.
++ Khi complete thì có thể revert lại. 
++ Chuyển useEffect xuống cuối
++ Chuyển tất cả các validation thành 1 hàm boolean
