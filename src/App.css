@@ -37,3 +37,15 @@
 .create-container {
   text-align: center;
 }
+
+.tasks-col {
+  width: 80%;
+}
+
+.actions-col {
+  width: 20%;
+}
+
+.cancel-btn {
+  border: 1px solid;
+}

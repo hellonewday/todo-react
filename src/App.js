@@ -1,5 +1,8 @@
 import "./App.css";
 import { useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
+import Swal from "sweetalert2";
+
 import NameInput from "./components/name-input/NameInput";
 import ListPlaceHolder from "./components/list-placeholder/ListPlaceHolder";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,7 +18,6 @@ import {
   validateCreate,
   validateEdit,
 } from "./redux/reducers/todos";
-import { ToastContainer } from "react-toastify";
 
 function App() {
   const dispatch = useDispatch();
@@ -54,8 +56,18 @@ function App() {
     setIsEdit(false);
   };
 
-  const onDelete = (id) => {
-    dispatch(removeTodo(id));
+  const onDelete = (id, title) => {
+    Swal.fire({
+      html: `<p>Do you want to delete this task: <b>${title}</b>?</p>`,
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      cancelButtonText: `Cancel`,
+      confirmButtonColor: "#d33",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(removeTodo(id));
+      }
+    });
   };
 
   const onCompleted = (id) => {
@@ -93,29 +105,40 @@ function App() {
             buttonName="Add Task"
             value={value}
             onChange={onCreateChange}
-            invalid={isInvalid}
           />
+
+          {isInvalid && (
+            <span className="text-sm px-1 py-1 text-red-500 font-bold">
+              Invalid input
+            </span>
+          )}
         </div>
         <div className="list-container flex flex-col py-2 px-4">
           <div className="uncompleted-container mr-52 py-3">
-            <h1 style={{ color: "red" }}>1. Uncompleted tasks:</h1>
+            <h1 className="text-red-400">1. Uncompleted tasks:</h1>
 
             {(isEdit || isEditInvalid) && (
-              <div className="edit-container">
-                <NameInput
-                  saveHandler={onEditSave}
-                  buttonName="Save"
-                  value={editValue.title}
-                  onChange={onEditChange}
-                  invalid={isEditInvalid}
-                />
-                <button
-                  onClick={cancelEdit}
-                  className="mt-6 mb-2 px-4 text-red-500"
-                >
-                  Cancel
-                </button>
-              </div>
+              <>
+                <div className="edit-container mb-2 space-x-2">
+                  <NameInput
+                    saveHandler={onEditSave}
+                    buttonName="Save"
+                    value={editValue.title}
+                    onChange={onEditChange}
+                  />
+                  <button
+                    onClick={cancelEdit}
+                    className="py-1 mt-2 px-4 bg-red-500 rounded-md text-white hover:bg-red-600"
+                  >
+                    Cancel
+                  </button>
+                </div>
+                {isEditInvalid && (
+                  <span className="text-sm px-1 py-1 text-red-500 font-bold">
+                    Invalid input
+                  </span>
+                )}
+              </>
             )}
 
             <ListPlaceHolder
@@ -128,7 +151,7 @@ function App() {
           </div>
 
           <div className="completed-container mr-52 py-3">
-            <h1 style={{ color: "green" }}>2. Completed tasks:</h1>
+            <h1 className="text-green-400">2. Completed tasks:</h1>
 
             <ListPlaceHolder
               data={todos.filter((item) => item.completed === true)}
