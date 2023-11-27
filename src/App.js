@@ -4,7 +4,6 @@ import { ToastContainer } from "react-toastify";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 
-
 import NameInput from "./components/name-input/NameInput";
 import ListPlaceHolder from "./components/list-placeholder/ListPlaceHolder";
 import {
@@ -106,13 +105,8 @@ function App() {
             buttonName="Add Task"
             value={value}
             onChange={onCreateChange}
-          />
-
-          {isInvalid && (
-            <span className="text-sm px-1 py-1 text-red-500 font-bold">
-              Task name must be above 3 characters.
-            </span>
-          )}
+            isFormInvalid={isInvalid}
+          ></NameInput>
         </div>
         <div className="list-container flex flex-col py-2 px-4">
           <div className="uncompleted-container mr-52 py-3">
@@ -126,19 +120,16 @@ function App() {
                     buttonName="Save"
                     value={editValue.title}
                     onChange={onEditChange}
-                  />
-                  <button
-                    onClick={cancelEdit}
-                    className="py-1 mt-2 px-4 bg-red-500 rounded-md text-white hover:bg-red-600"
+                    isFormInvalid={isEditInvalid}
                   >
-                    Cancel
-                  </button>
+                    <button
+                      onClick={cancelEdit}
+                      className="py-1 mt-2 px-4 bg-red-500 rounded-md text-white hover:bg-red-600"
+                    >
+                      Cancel
+                    </button>
+                  </NameInput>
                 </div>
-                {isEditInvalid && (
-                  <span className="text-sm px-1 py-1 text-red-500 font-bold">
-                    Task name must be above 3 characters.
-                  </span>
-                )}
               </div>
             )}
 

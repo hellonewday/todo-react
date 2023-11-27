@@ -1,5 +1,6 @@
 function NameInput(prop) {
-  const { saveHandler, buttonName, onChange, value } = prop;
+  const { saveHandler, buttonName, onChange, value, children, isFormInvalid } =
+    prop;
 
   return (
     <div className="space-x-2">
@@ -16,6 +17,12 @@ function NameInput(prop) {
       >
         {buttonName}
       </button>
+      {children}
+      {isFormInvalid && (
+        <p className="error-message text-sm py-1 text-red-500">
+          Task name must be above 3 characters.
+        </p>
+      )}
     </div>
   );
 }

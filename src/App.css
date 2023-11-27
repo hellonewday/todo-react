@@ -49,3 +49,7 @@
 .cancel-btn {
   border: 1px solid;
 }
+
+.error-message {
+  margin: 0 !important;
+}
