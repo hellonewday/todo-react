@@ -4,6 +4,7 @@ import {
   COMPLETE_TODO,
   EDIT_TODO,
   FETCH_TODO,
+  QUERY_TODO,
   REMOVE_TODO,
 } from "../constants/todos";
 import {
@@ -11,12 +12,22 @@ import {
   completeTodoAPI,
   editTodoAPI,
   fetchTodosAPI,
+  queryTodosAPI,
   removeTodoAPI,
 } from "../apis/todos";
 
 export const fetchTodos = createAsyncThunk(FETCH_TODO, async () => {
   try {
     const todos = await fetchTodosAPI();
+    return todos;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+});
+
+export const queryTodos = createAsyncThunk(QUERY_TODO, async (queryStr) => {
+  try {
+    const todos = await queryTodosAPI(queryStr);
     return todos;
   } catch (error) {
     throw new Error(error.message);

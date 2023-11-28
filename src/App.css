@@ -11,10 +11,6 @@
   }
 }
 
-.App-header {
-  font-size: calc(10px + 2vmin);
-}
-
 .App-link {
   color: #61dafb;
 }
@@ -28,7 +24,6 @@
   }
 }
 
-
 .edit-container {
   display: flex;
   align-items: center;
@@ -39,7 +34,14 @@
 }
 
 .tasks-col {
-  width: 80%;
+  width: 50%;
+  text-align: left;
+  }
+
+.progress-col {
+  text-align: left;
+  display: flex;
+  align-items: center;
 }
 
 .actions-col {

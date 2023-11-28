@@ -4,6 +4,7 @@ import {
   completeTodo,
   editTodo,
   fetchTodos,
+  queryTodos,
   removeTodo,
 } from "../thunk/todos";
 import { fireToast } from "../../utils/toast.utils";
@@ -12,20 +13,21 @@ export const todosReducer = createSlice({
   name: "todos",
   initialState: {
     todos: [],
-    isInvalid: false,
-    isEditInvalid: false,
     apiStatus: "idle",
   },
   reducers: {
-    validateCreate: (state, action) => {
-      state.isInvalid = action.payload;
-    },
-    validateEdit: (state, action) => {
-      state.isEditInvalid = action.payload;
-    },
     resetStatus: (state, action) => {
       state.apiStatus = "idle";
     },
+    sortByProgressBar: (state, action) => {
+      let sortTodos = state.todos.toSorted((a, b) => {
+        return action.payload === "ASCENDING"
+          ? a.progress - b.progress
+          : b.progress - a.progress;
+      });
+
+      state.todos = sortTodos;
+    }
   },
   extraReducers(builder) {
     builder
@@ -73,6 +75,9 @@ export const todosReducer = createSlice({
         );
         if (updateTodo) {
           updateTodo.title = action.payload.title;
+          updateTodo.progress = action.payload.progress;
+          updateTodo.completed = action.payload.completed;
+          updateTodo.category = action.payload.category;
         }
         state.apiStatus = "fulfilled";
         fireToast("info", "Update task successfully", "colored");
@@ -89,17 +94,28 @@ export const todosReducer = createSlice({
         );
         if (updateTodo) {
           updateTodo.completed = action.payload.completed;
+          updateTodo.progress = 100;
         }
         state.apiStatus = "fulfilled";
         fireToast("success", "Update task successfully", "light");
       })
       .addCase(completeTodo.rejected, (state, action) => {
         state.apiStatus = "error";
+      })
+      .addCase(queryTodos.pending, (state, action) => {
+        state.apiStatus = 'pending';
+      })
+      .addCase(queryTodos.fulfilled, (state, action) => {
+        state.apiStatus = "idle";
+        state.todos = action.payload;
+      })
+      .addCase(queryTodos.rejected, (state, action) => {
+        state.apiStatus = "error";
       });
   },
 });
 
-export const { validateCreate, validateEdit, resetStatus } =
+export const { resetStatus, sortByProgressBar } =
   todosReducer.actions;
 
 export default todosReducer.reducer;
