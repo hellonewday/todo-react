@@ -9,6 +9,17 @@ export const fetchTodosAPI = async () => {
   }
 };
 
+export const queryTodosAPI = async (query) => {
+  try {
+    let response = await axios.get(
+      process.env.REACT_APP_API_URL + "/lists?" + query
+    );
+    return response.data.data;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const addTodoAPI = async (newTodo) => {
   try {
     let response = await axios.post(
@@ -39,6 +50,7 @@ export const completeTodoAPI = async (id) => {
       process.env.REACT_APP_API_URL + "/lists/" + id,
       {
         completed: true,
+        progress: 100,
       }
     );
     return response.data.data;

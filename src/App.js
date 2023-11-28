@@ -4,59 +4,59 @@ import { ToastContainer } from "react-toastify";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
 
-import NameInput from "./components/name-input/NameInput";
-import ListPlaceHolder from "./components/list-placeholder/ListPlaceHolder";
 import {
   addTodo,
   completeTodo,
   editTodo,
   fetchTodos,
+  queryTodos,
   removeTodo,
 } from "./redux/thunk/todos";
-import {
-  resetStatus,
-  validateCreate,
-  validateEdit,
-} from "./redux/reducers/todos";
-import CreatePopup from "./components/create-popup";
-import Navbar from "./components/common/Navbar";
+import { resetStatus } from "./redux/reducers/todos";
 
+import ListPlaceHolder from "./components/list-placeholder/ListPlaceHolder";
+import CreatePopup from "./components/create-todo/CreateTodo";
+import { SearchBar } from "./components/common/SearchBar";
+import { validateTodo } from "./utils/validation.utils";
+
+const todoTemplate = {
+  title: "",
+  completed: false,
+  description: "",
+  progress: 0,
+  category: "",
+};
+const searchTemplate = {
+  title: "",
+  category: "",
+  progress: "",
+};
 function App() {
   const dispatch = useDispatch();
-  const { todos, isInvalid, isEditInvalid } = useSelector(
-    (state) => state.todos
-  );
+  const { todos, apiStatus } = useSelector((state) => state.todos);
+  const { labels } = useSelector((state) => state.labels);
 
-  const [isEdit, setIsEdit] = useState(false);
-  const [editValue, setEditValue] = useState({});
-  // const [showModal, setShowModal] = useState(false);
+  const [editValue, setEditValue] = useState(todoTemplate);
+  const [value, setValue] = useState(todoTemplate);
+  const [searchValue, setSearchValue] = useState(searchTemplate);
+  const [showModal, setShowModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
-  const [value, setValue] = useState("");
-
-  useEffect(() => {
-    dispatch(fetchTodos());
-    return () => {
-      dispatch(resetStatus());
-    };
-  }, [dispatch]);
+  const [invalidCreate, setInvalidCreate] = useState("");
+  const [invalidUpdate, setInvalidUpdate] = useState("");
 
   const onCreateChange = (event) => {
     setValue({ ...value, [event.target.name]: event.target.value });
   };
 
   const onEdit = (id) => {
-    setIsEdit(true);
     let editVal = todos.filter((item) => item.id === id)[0];
     setEditValue(editVal);
+    setShowEditModal(true);
   };
 
   const onEditChange = (event) => {
-    setEditValue({ ...editValue, title: event.target.value });
-  };
-
-  const cancelEdit = () => {
-    setIsEdit(false);
-    dispatch(validateEdit(false));
+    setEditValue({ ...editValue, [event.target.name]: event.target.value });
   };
 
   const onDelete = (id, title) => {
@@ -74,107 +74,138 @@ function App() {
   };
 
   const onCompleted = (id) => {
-    setIsEdit(false);
     dispatch(completeTodo(id));
+  };
+
+  const onReverse = (id) => {
+    let request = {
+      id,
+      completed: false,
+      progress: 0,
+    };
+    dispatch(editTodo(request));
   };
 
   const onCreateSave = (event) => {
     event.preventDefault();
-    if (value.title.length < 3) {
-      dispatch(validateCreate(true));
+    if (Object.keys(validateTodo(value)).length > 0) {
+      setInvalidCreate(validateTodo(value));
     } else {
-      dispatch(validateCreate(false));
-      console.log(value);
+      setInvalidCreate(false);
       dispatch(addTodo(value));
+      setSearchValue(searchTemplate);
+      dispatch(fetchTodos());
     }
   };
 
   const onEditSave = (event) => {
     event.preventDefault();
 
-    if (editValue.title.length < 3) {
-      dispatch(validateEdit(true));
+    if (Object.keys(validateTodo(editValue)).length > 0) {
+      setInvalidUpdate(validateTodo(editValue));
     } else {
-      dispatch(validateEdit(false));
-      dispatch(editTodo({ id: editValue.id, title: editValue.title }));
-      setIsEdit(false);
+      let request = {
+        id: editValue.id,
+        title: editValue.title,
+        progress: parseInt(editValue.progress),
+        category: editValue.category._id
+          ? editValue.category._id
+          : editValue.category,
+        completed: parseInt(editValue.progress) === 100,
+      };
+
+      setInvalidUpdate(false);
+      dispatch(editTodo(request));
     }
   };
+
+  const cancelModal = () => {
+    setShowModal(false);
+    setValue(todoTemplate);
+  };
+
+  const onSearchBarChange = (event) => {
+    setSearchValue({ ...searchValue, [event.target.name]: event.target.value });
+  };
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    let queryString = [];
+    if (searchValue.category.length > 0)
+      queryString.push(`category=${searchValue.category}`);
+    if (searchValue.title.length > 0)
+      queryString.push(`title=${searchValue.title}`);
+    if (searchValue.progress.length > 0)
+      queryString.push(`progress=${searchValue.progress}`);
+    dispatch(queryTodos(queryString.join("&")));
+  };
+
+  const cancelEdit = () => {
+    setShowEditModal(false);
+    setEditValue(todoTemplate);
+  };
+
+  useEffect(() => {
+    dispatch(fetchTodos());
+    return () => {
+      dispatch(resetStatus());
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (apiStatus === "fulfilled") {
+      setShowModal(false);
+      setShowEditModal(false);
+      setValue(todoTemplate);
+    }
+  }, [apiStatus, todos, dispatch]);
+
   return (
     <div>
-      <Navbar />
       <div className="App container mx-auto">
         <header className="App-header">
-          {/* <div className="create-container">
-            <NameInput
-              saveHandler={onCreateSave}
-              buttonName="Add Task"
-              value={value}
-
-              onChange={onCreateChange}
-              isFormInvalid={isInvalid}
-            ></NameInput>
-          </div> */}
           <div className="list-container flex flex-col py-2 px-4">
-            <CreatePopup
-              onCreateSave={onCreateSave}
-              titleValue={value}
-              onChange={onCreateChange}
-              isFormInvalid={isInvalid}
+            <SearchBar
+              labels={labels}
+              onChange={onSearchBarChange}
+              handleSearch={handleSearch}
+              searchValue={searchValue}
+              handlePopCreate={() => setShowModal(true)}
             />
 
-            <div className="mb-3 mt-2 pt-0">
-              <input
-                type="text"
-                placeholder="Search"
-                className="px-3 py-4 placeholder-blueGray-300 border border-gray-100 text-blueGray-600 relative bg-white rounded text-base shadow outline-none focus:outline-none focus:ring w-full"
+            <div className="main-container py-3">
+              <CreatePopup
+                modalName={"Create new task"}
+                onCreateSave={onCreateSave}
+                titleValue={value}
+                showModal={showModal}
+                onChange={onCreateChange}
+                onShowModal={cancelModal}
+                isFormInvalid={invalidCreate}
+                saveButtonName="Create"
               />
-            </div>
 
-            <div className="uncompleted-container py-3">
-              <h1 className="text-red-400 font-bold	">1. Uncompleted tasks:</h1>
-
-              {isEdit && (
-                <div className="mb-2">
-                  <div className="edit-container space-x-2">
-                    <NameInput
-                      saveHandler={onEditSave}
-                      buttonName="Save"
-                      value={editValue.title}
-                      onChange={onEditChange}
-                      isFormInvalid={isEditInvalid}
-                    >
-                      <button
-                        onClick={cancelEdit}
-                        className="py-1 mt-2 px-4 bg-red-500 rounded-md text-white hover:bg-red-600"
-                      >
-                        Cancel
-                      </button>
-                    </NameInput>
-                  </div>
-                </div>
-              )}
+              <CreatePopup
+                modalName={"Edit task"}
+                onCreateSave={onEditSave}
+                titleValue={editValue}
+                showModal={showEditModal}
+                onChange={onEditChange}
+                onShowModal={cancelEdit}
+                isFormInvalid={invalidUpdate}
+                saveButtonName={"Save"}
+              />
 
               <ListPlaceHolder
-                data={todos.filter((item) => item.completed === false)}
+                data={todos}
                 onDelete={onDelete}
                 listType="uncompleted"
                 onComplete={onCompleted}
                 onEdit={onEdit}
+                onReverse={onReverse}
               />
             </div>
 
-            <div className="completed-container py-3">
-              <h1 className="text-green-500 font-bold	">2. Completed tasks:</h1>
-
-              <ListPlaceHolder
-                data={todos.filter((item) => item.completed === true)}
-                onDelete={onDelete}
-                listType="completed"
-                onComplete={onCompleted}
-                onEdit={onEdit}
-              />
-            </div>
             <ToastContainer />
           </div>
         </header>
