@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addLabel, fetchLabels } from "../../redux/thunk/labels";
 import { TwitterPicker } from "react-color";
+import { validateLabel } from "../../utils/validation.utils";
 
+const categoryTemplate = {
+  name: "",
+  color: "",
+};
 export default function CreatePopup(prop) {
   const {
     showModal,
@@ -19,8 +24,10 @@ export default function CreatePopup(prop) {
 
   const { labels, apiLabelStatus } = useSelector((state) => state.labels);
 
-  const [category, setCategory] = useState({});
+  const [category, setCategory] = useState(categoryTemplate);
   const [isCreate, setIsCreate] = useState(false);
+
+  const [categoryMsg, setCategoryMsg] = useState("");
 
   const onCategoryChange = (event) => {
     setCategory({ ...category, [event.target.name]: event.target.value });
@@ -28,8 +35,15 @@ export default function CreatePopup(prop) {
 
   const onCategorySave = (event) => {
     event.preventDefault();
-    dispatch(addLabel(category));
-    setCategory({});
+    if (Object.keys(validateLabel(category.name)).length > 0) {
+      console.log(validateLabel(category.name).name);
+      setCategoryMsg(validateLabel(category.name).name);
+    } else {
+      console.log(category);
+      dispatch(addLabel(category));
+      setCategory(categoryTemplate);
+      setCategoryMsg("");
+    }
   };
 
   const switchIsCreate = () => {
@@ -150,7 +164,7 @@ export default function CreatePopup(prop) {
                           type="text"
                           style={{ color: category.color }}
                           className="w-80 md:w-96 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                          placeholder="Type task name"
+                          placeholder="Category name"
                           onChange={onCategoryChange}
                           name="name"
                           value={category.name || ""}
@@ -161,6 +175,11 @@ export default function CreatePopup(prop) {
                           color={category.color || "#fff"}
                           onChangeComplete={onColorChange}
                         />
+                        {categoryMsg.length > 0 && (
+                          <p className="error-message text-sm py-1 text-red-500">
+                            {categoryMsg}
+                          </p>
+                        )}
                       </div>
                     ) : null}
                     {isCreate ? (
