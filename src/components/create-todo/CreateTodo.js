@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addLabel, fetchLabels } from "../../redux/thunk/labels";
 import { TwitterPicker } from "react-color";
 import { validateLabel } from "../../utils/validation.utils";
+import InputText from "../common/InputText";
 
 const categoryTemplate = {
   name: "",
@@ -91,37 +92,23 @@ export default function CreatePopup(prop) {
                 {/*body*/}
                 <div className="relative p-6 grid gap-4 mb-4 grid-cols-2">
                   <div className="col-span-2">
-                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      Task Name
-                    </label>
-                    <input
-                      type="text"
-                      className="w-80 md:w-96 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                      placeholder="Type task name"
+                    <InputText
                       name="title"
+                      labelName={"Task Name"}
+                      placeholder="Type task name"
+
+                      isFormInvalid={isFormInvalid?.title}
                       onChange={onChange}
-                      value={titleValue.title || ""}
-                      required=""
+                      value={titleValue.title}
                     />
-                    {isFormInvalid?.title !== undefined && (
-                      <p className="error-message text-sm py-1 text-red-500">
-                        {isFormInvalid.title}
-                      </p>
-                    )}
                   </div>
                   <div className="col-span-2">
-                    <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                      Description
-                    </label>
-                    <input
-                      type="text"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 
-                      w-80 md:w-96 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5"
-                      placeholder="Description"
+                    <InputText
                       name="description"
+                      labelName={"Description"}
+                      placeholder="Description..."
                       onChange={onChange}
-                      value={titleValue.description || ""}
-                      required=""
+                      value={titleValue.description}
                     />
                   </div>
 

@@ -8,12 +8,14 @@ import {
   FaArrowDown,
 } from "react-icons/fa";
 import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { sortByProgressBar } from "../../redux/reducers/todos";
 
 function ListPlaceHolder(prop) {
   const { data, onDelete, onComplete, onEdit, onReverse } = prop;
 
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const [isShort, setIsShort] = useState(null);
   const progressText = (progress) => {
@@ -33,6 +35,7 @@ function ListPlaceHolder(prop) {
   };
 
   const handleSort = () => {
+    console.log(location.search);
     if (isShort == null) {
       setIsShort(true);
     } else {
