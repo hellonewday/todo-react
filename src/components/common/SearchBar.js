@@ -82,7 +82,7 @@ export function SearchBar(prop) {
           <p></p>
           <button
             onClick={handleSearch}
-            className="text-white bg-blue-600 rounded-md px-4 py-2"
+            className="search-btn text-white bg-blue-600 rounded-md px-4 py-2"
           >
             Search
           </button>
@@ -91,7 +91,7 @@ export function SearchBar(prop) {
       <div className="col-span-1">
         <button
           onClick={handlePopCreate}
-          className="text-white bg-red-600 rounded-md px-4 py-2 flex space-x-2 items-center"
+          className="text-white md:m-0 ml-2.5 bg-red-600 rounded-md px-4 py-2 flex space-x-2 items-center"
         >
           <FaPlus /> <span>Create new</span>
         </button>
