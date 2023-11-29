@@ -1,8 +1,8 @@
-import axios from "axios";
+import api from ".";
 
 export const fetchLabelsAPI = async () => {
   try {
-    let response = await axios.get(process.env.REACT_APP_API_URL + "/labels");
+    let response = await api.get("/labels");
     return response.data.data;
   } catch (error) {
     return error;
@@ -11,10 +11,7 @@ export const fetchLabelsAPI = async () => {
 
 export const addLabelAPI = async (newLabel) => {
   try {
-    let response = await axios.post(
-      process.env.REACT_APP_API_URL + "/labels",
-      newLabel
-    );
+    let response = await api.post("/labels", newLabel);
     return response.data;
   } catch (error) {
     return error;
@@ -23,9 +20,7 @@ export const addLabelAPI = async (newLabel) => {
 
 export const removeLabelAPI = async (id) => {
   try {
-    let response = await axios.delete(
-      process.env.REACT_APP_API_URL + "/labels/" + id
-    );
+    let response = await api.delete("/labels/" + id);
     return response.data;
   } catch (error) {
     return error;

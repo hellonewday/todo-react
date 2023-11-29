@@ -26,11 +26,11 @@ export const labelReducer = createSlice({
       .addCase(addLabel.fulfilled, (state, action) => {
         state.labels = [...state.labels, action.payload.data];
         state.apiLabelStatus = "fulfilled";
-        fireToast("success", "Create task successfully", "colored");
+        fireToast("success", "Create category successfully", "colored");
       })
       .addCase(addLabel.rejected, (state, action) => {
         state.apiLabelStatus = "error";
-        fireToast("error", "Create task failed", "colored");
+        fireToast("error", "Create category failed", "colored");
       })
       .addCase(removeLabel.pending, (state, action) => {
         state.apiLabelStatus = "loading";
@@ -40,7 +40,7 @@ export const labelReducer = createSlice({
           (todo) => todo.id !== action.payload.id
         );
         state.apiLabelStatus = "fulfilled";
-        fireToast("info", "Delete task successfully", "light");
+        fireToast("info", "Delete category successfully", "light");
       });
   },
 });

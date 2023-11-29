@@ -4,7 +4,7 @@ export function SearchBar(prop) {
   const { labels, onChange, searchValue, handleSearch, handlePopCreate } = prop;
   return (
     <>
-      <div className="grid md:grid-cols-7 grid-cols-1 space-x-3 items-center">
+      <div className="grid md:grid-cols-7 grid-cols-1 md:space-x-3 items-center">
         <div className="mb-3 mt-2 pt-0 col-span-2">
           <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             Search name
@@ -91,7 +91,7 @@ export function SearchBar(prop) {
       <div className="col-span-1">
         <button
           onClick={handlePopCreate}
-          className="text-white md:m-0 ml-2.5 bg-red-600 rounded-md px-4 py-2 flex space-x-2 items-center"
+          className="text-white bg-red-600 rounded-md px-4 py-2 flex space-x-2 items-center"
         >
           <FaPlus /> <span>Create new</span>
         </button>

@@ -48,7 +48,7 @@ function ListPlaceHolder(prop) {
           <tr className="bg-gray-100">
             <th className="border px-4 py-2 tasks-col">Task</th>
             <th
-              className="border px-4 py-2 progress-col  space-x-2"
+              className="border px-4 py-2 progress-col space-x-2"
               onClick={() => handleSort()}
             >
               {sortByProgress(isShort)}

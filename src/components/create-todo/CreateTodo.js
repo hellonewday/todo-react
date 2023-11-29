@@ -54,6 +54,12 @@ export default function CreatePopup(prop) {
     setCategory({ ...category, color: color.hex });
   };
 
+  const onCloseModal = () => {
+    setCategoryMsg("");
+    setIsCreate(false);
+    onShowModal(false);
+  };
+
   useEffect(() => {
     dispatch(fetchLabels());
   }, [dispatch]);
@@ -109,7 +115,8 @@ export default function CreatePopup(prop) {
                     </label>
                     <input
                       type="text"
-                      className="w-80 md:w-96 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 
+                      w-80 md:w-96 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5"
                       placeholder="Description"
                       name="description"
                       onChange={onChange}
@@ -130,7 +137,8 @@ export default function CreatePopup(prop) {
                         value={
                           titleValue.category ? titleValue.category._id : ""
                         }
-                        className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                        className=" bg-gray-200 border border-gray-200 text-gray-700 focus:bg-white focus:border-gray-500
+                        py-3 px-4 pr-8 rounded leading-tight focus:outline-none block appearance-none w-full"
                         id="grid-state"
                       >
                         <option value="">-- Choose a option</option>
@@ -225,7 +233,7 @@ export default function CreatePopup(prop) {
                   <button
                     className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
-                    onClick={() => onShowModal(false)}
+                    onClick={onCloseModal}
                   >
                     Close
                   </button>

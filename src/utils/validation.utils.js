@@ -1,5 +1,6 @@
+/* eslint-disable no-useless-escape */
 export const validateTodo = (value) => {
-  let format = /[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
+  let format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
 
   if (value.title.length === 0) {
     return { title: "Title length must not be empty" };
@@ -19,7 +20,7 @@ export const validateTodo = (value) => {
 };
 
 export const validateLabel = (label_name) => {
-  let format = /[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
+  let format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
   if (label_name.length === 0) {
     return { name: "Title length must not be empty" };
   }
