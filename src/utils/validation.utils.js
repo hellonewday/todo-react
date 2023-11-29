@@ -17,3 +17,19 @@ export const validateTodo = (value) => {
     return { category: "Category must not be empty" };
   } else return {};
 };
+
+export const validateLabel = (label_name) => {
+  let format = /[ `!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?~]/;
+  if (label_name.length === 0) {
+    return { name: "Title length must not be empty" };
+  }
+  if (label_name.length < 3) {
+    return { name: "Title length must be above 3 characters" };
+  }
+  if (format.test(label_name)) {
+    return { name: "Title must not contain special characters" };
+  }
+  if (label_name.length > 250) {
+    return { name: "Title length must be below 250 characters" };
+  } else return {};
+};
