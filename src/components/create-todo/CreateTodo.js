@@ -96,7 +96,6 @@ export default function CreatePopup(prop) {
                       name="title"
                       labelName={"Task Name"}
                       placeholder="Type task name"
-
                       isFormInvalid={isFormInvalid?.title}
                       onChange={onChange}
                       value={titleValue.title}
@@ -120,7 +119,6 @@ export default function CreatePopup(prop) {
                       <select
                         onChange={onChange}
                         name="category"
-                        defaultValue={""}
                         value={
                           titleValue.category ? titleValue.category._id : ""
                         }
