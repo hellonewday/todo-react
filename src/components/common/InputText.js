@@ -7,6 +7,7 @@ const InputText = (prop) => {
           isFormInvalid !== undefined ? "text-red-700" : "text-gray-900"
         }`}
       >
+        {/* */}
         {labelName}
       </label>
       <input

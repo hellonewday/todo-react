@@ -18,6 +18,7 @@ import ListPlaceHolder from "../list-placeholder/ListPlaceHolder";
 import CreatePopup from "../create-todo/CreateTodo";
 import { SearchBar } from "../common/SearchBar";
 import { validateTodo } from "../../utils/validation.utils";
+import { Pagination } from "./Pagination";
 
 const todoTemplate = {
   title: "",
@@ -65,7 +66,7 @@ function Home() {
 
   // Edit action
   const onEdit = (id) => {
-    let editVal = todos.filter((item) => item.id === id)[0];
+    let editVal = todos.data.filter((item) => item.id === id)[0];
     setEditValue(editVal);
     setShowEditModal(true);
   };
@@ -130,13 +131,12 @@ function Home() {
     let queryString = [];
 
     Object.keys(searchValue).forEach((item) => {
-      if (searchValue[item].length > 0) {
+      if (searchValue[item].length > 0 && item !== "page") {
         let str = `${item}=${searchValue[item]}`;
         queryString.push(str);
       }
     });
     navigate("?" + queryString.join("&"));
-    dispatch(queryTodos(queryString.join("&")));
   };
 
   // reset state on cancel action
@@ -151,6 +151,46 @@ function Home() {
     setEditValue(todoTemplate);
   };
 
+  const onPageChange = (page) => {
+    let queryString = [];
+
+    Object.keys(searchValue).forEach((item) => {
+      if (searchValue[item].length > 0) {
+        let str = `${item}=${searchValue[item]}`;
+        queryString.push(str);
+      }
+    });
+
+    if (Object.keys(searchValue).includes("page") === false) {
+      queryString.push(`page=${page}`);
+      navigate("?" + queryString.join("&"));
+    } else {
+      queryString = queryString.filter((item) => !item.includes("page"));
+      queryString.push(`page=${page}`);
+      navigate("?" + queryString.join("&"));
+    }
+  };
+
+  const onSortChange = (sort) => {
+    let queryString = [];
+
+    Object.keys(searchValue).forEach((item) => {
+      if (searchValue[item].length > 0) {
+        let str = `${item}=${searchValue[item]}`;
+        queryString.push(str);
+      }
+    });
+
+    if (Object.keys(searchValue).includes("sort") === false) {
+      queryString.push(`sort=${sort}`);
+      navigate("?" + queryString.join("&"));
+    } else {
+      queryString = queryString.filter((item) => !item.includes("sort"));
+      queryString.push(`sort=${sort}`);
+      navigate("?" + queryString.join("&"));
+    }
+  };
+
   // Hooks
   const historyUtil = useCallback(() => {
     const searchQuery = location.search;
@@ -163,6 +203,7 @@ function Home() {
       return null;
     }
   }, [location]);
+
   useEffect(() => {
     dispatch(historyUtil() === null ? fetchTodos() : queryTodos(historyUtil()));
     return () => {
@@ -175,7 +216,7 @@ function Home() {
       setShowEditModal(false);
       setValue(todoTemplate);
     }
-  }, [apiStatus, todos]);
+  }, [apiStatus]);
 
   return (
     <div>
@@ -214,13 +255,23 @@ function Home() {
               />
 
               <ListPlaceHolder
-                data={todos}
+                data={todos.data}
                 onDelete={onDelete}
                 listType="uncompleted"
                 onComplete={onCompleted}
+                onSort={onSortChange}
                 onEdit={onEdit}
                 onReverse={onReverse}
               />
+
+              {todos.count > 5 ? (
+                <Pagination
+                  totalPages={todos.totalPages}
+                  currentPage={todos.currentPage}
+                  totalCount={todos.count}
+                  onPageChange={onPageChange}
+                />
+              ) : null}
             </div>
 
             <ToastContainer />

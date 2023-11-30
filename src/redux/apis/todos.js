@@ -3,7 +3,7 @@ import api from ".";
 export const fetchTodosAPI = async () => {
   try {
     let response = await api.get("/lists");
-    return response.data.data;
+    return response.data;
   } catch (error) {
     return error;
   }
@@ -12,7 +12,7 @@ export const fetchTodosAPI = async () => {
 export const queryTodosAPI = async (query) => {
   try {
     let response = await api.get("/lists?" + query);
-    return response.data.data;
+    return response.data;
   } catch (error) {
     return error;
   }

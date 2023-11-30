@@ -20,14 +20,14 @@ export const todosReducer = createSlice({
       state.apiStatus = "idle";
     },
     sortByProgressBar: (state, action) => {
-      let sortTodos = state.todos.toSorted((a, b) => {
+      let sortTodos = state.todos.data.toSorted((a, b) => {
         return action.payload === "ASCENDING"
           ? a.progress - b.progress
           : b.progress - a.progress;
       });
 
-      state.todos = sortTodos;
-    }
+      state.todos.data = sortTodos;
+    },
   },
   extraReducers(builder) {
     builder
@@ -45,7 +45,7 @@ export const todosReducer = createSlice({
         state.apiStatus = "loading";
       })
       .addCase(addTodo.fulfilled, (state, action) => {
-        state.todos = [...state.todos, action.payload.data];
+        state.todos.data = [...state.todos.data, action.payload.data];
         state.apiStatus = "fulfilled";
         fireToast("success", "Create task successfully", "colored");
       })
@@ -57,7 +57,7 @@ export const todosReducer = createSlice({
         state.apiStatus = "loading";
       })
       .addCase(removeTodo.fulfilled, (state, action) => {
-        state.todos = state.todos.filter(
+        state.todos.data = state.todos.data.filter(
           (todo) => todo.id !== action.payload.id
         );
         state.apiStatus = "fulfilled";
@@ -70,7 +70,7 @@ export const todosReducer = createSlice({
         state.apiStatus = "pending";
       })
       .addCase(editTodo.fulfilled, (state, action) => {
-        let updateTodo = state.todos.find(
+        let updateTodo = state.todos.data.find(
           (todo) => todo.id === action.payload.id
         );
         if (updateTodo) {
@@ -89,7 +89,7 @@ export const todosReducer = createSlice({
         state.apiStatus = "pending";
       })
       .addCase(completeTodo.fulfilled, (state, action) => {
-        let updateTodo = state.todos.find(
+        let updateTodo = state.todos.data.find(
           (todo) => todo.id === action.payload.id
         );
         if (updateTodo) {
@@ -103,7 +103,7 @@ export const todosReducer = createSlice({
         state.apiStatus = "error";
       })
       .addCase(queryTodos.pending, (state, action) => {
-        state.apiStatus = 'pending';
+        state.apiStatus = "pending";
       })
       .addCase(queryTodos.fulfilled, (state, action) => {
         state.apiStatus = "idle";
@@ -115,7 +115,6 @@ export const todosReducer = createSlice({
   },
 });
 
-export const { resetStatus, sortByProgressBar } =
-  todosReducer.actions;
+export const { resetStatus, sortByProgressBar } = todosReducer.actions;
 
 export default todosReducer.reducer;

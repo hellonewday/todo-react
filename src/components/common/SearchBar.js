@@ -13,7 +13,7 @@ export function SearchBar(prop) {
             type="text"
             placeholder="Search"
             name="title"
-            value={searchValue.title}
+            value={searchValue.title || []}
             onChange={onChange}
             className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
           />
