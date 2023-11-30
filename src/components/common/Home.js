@@ -59,7 +59,6 @@ function Home() {
     } else {
       setInvalidCreate(false);
       dispatch(addTodo(value));
-      navigate("/");
       setSearchValue(searchTemplate);
     }
   };
