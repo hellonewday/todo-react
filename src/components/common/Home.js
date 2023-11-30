@@ -48,47 +48,10 @@ function Home() {
   const [invalidCreate, setInvalidCreate] = useState("");
   const [invalidUpdate, setInvalidUpdate] = useState("");
 
+  // Create action
   const onCreateChange = (event) => {
     setValue({ ...value, [event.target.name]: event.target.value });
   };
-
-  const onEdit = (id) => {
-    let editVal = todos.filter((item) => item.id === id)[0];
-    setEditValue(editVal);
-    setShowEditModal(true);
-  };
-
-  const onEditChange = (event) => {
-    setEditValue({ ...editValue, [event.target.name]: event.target.value });
-  };
-
-  const onDelete = (id, title) => {
-    Swal.fire({
-      html: `<p>Do you want to delete this task: <b>${title}</b>?</p>`,
-      showCancelButton: true,
-      confirmButtonText: "Delete",
-      cancelButtonText: `Cancel`,
-      confirmButtonColor: "#d33",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        dispatch(removeTodo(id));
-      }
-    });
-  };
-
-  const onCompleted = (id) => {
-    dispatch(completeTodo(id));
-  };
-
-  const onReverse = (id) => {
-    let request = {
-      id,
-      completed: false,
-      progress: 0,
-    };
-    dispatch(editTodo(request));
-  };
-
   const onCreateSave = (event) => {
     event.preventDefault();
     if (Object.keys(validateTodo(value)).length > 0) {
@@ -101,6 +64,15 @@ function Home() {
     }
   };
 
+  // Edit action
+  const onEdit = (id) => {
+    let editVal = todos.filter((item) => item.id === id)[0];
+    setEditValue(editVal);
+    setShowEditModal(true);
+  };
+  const onEditChange = (event) => {
+    setEditValue({ ...editValue, [event.target.name]: event.target.value });
+  };
   const onEditSave = (event) => {
     event.preventDefault();
 
@@ -124,17 +96,37 @@ function Home() {
     }
   };
 
-  const cancelModal = () => {
-    setShowModal(false);
-    setInvalidCreate("");
-    setValue(todoTemplate);
+  // Delete, completed, reverse action
+  const onDelete = (id, title) => {
+    Swal.fire({
+      html: `<p>Do you want to delete this task: <b>${title}</b>?</p>`,
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      cancelButtonText: `Cancel`,
+      confirmButtonColor: "#d33",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        dispatch(removeTodo(id));
+      }
+    });
+  };
+  const onCompleted = (id) => {
+    dispatch(completeTodo(id));
+  };
+  const onReverse = (id) => {
+    let request = {
+      id,
+      completed: false,
+      progress: 0,
+    };
+    dispatch(editTodo(request));
   };
 
-  const onSearchBarChange = (event) => {
+  // Search action
+  const onSearchChange = (event) => {
     setSearchValue({ ...searchValue, [event.target.name]: event.target.value });
   };
-
-  const handleSearch = (event) => {
+  const onSearch = (event) => {
     event.preventDefault();
     let queryString = [];
 
@@ -148,12 +140,19 @@ function Home() {
     dispatch(queryTodos(queryString.join("&")));
   };
 
+  // reset state on cancel action
+  const cancelModal = () => {
+    setShowModal(false);
+    setInvalidCreate("");
+    setValue(todoTemplate);
+  };
   const cancelEdit = () => {
     setShowEditModal(false);
     setInvalidUpdate("");
     setEditValue(todoTemplate);
   };
 
+  // Hooks
   const historyUtil = useCallback(() => {
     const searchQuery = location.search;
     if (searchQuery) {
@@ -165,14 +164,12 @@ function Home() {
       return null;
     }
   }, [location]);
-
   useEffect(() => {
     dispatch(historyUtil() === null ? fetchTodos() : queryTodos(historyUtil()));
     return () => {
       dispatch(resetStatus());
     };
   }, [historyUtil, dispatch]);
-
   useEffect(() => {
     if (apiStatus === "fulfilled") {
       setShowModal(false);
@@ -180,6 +177,7 @@ function Home() {
       setValue(todoTemplate);
     }
   }, [apiStatus, todos]);
+
   return (
     <div>
       <div className="App container mx-auto">
@@ -187,8 +185,8 @@ function Home() {
           <div className="list-container flex flex-col py-2 px-4">
             <SearchBar
               labels={labels}
-              onChange={onSearchBarChange}
-              handleSearch={handleSearch}
+              onChange={onSearchChange}
+              handleSearch={onSearch}
               searchValue={searchValue}
               handlePopCreate={() => setShowModal(true)}
             />
