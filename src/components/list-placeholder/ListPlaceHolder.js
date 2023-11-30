@@ -69,7 +69,7 @@ function ListPlaceHolder(prop) {
                     {task.category ? (
                       <div
                         style={{ background: task.category.color }}
-                        className="text-xs font-semibold inline-block py-1 px-2 uppercase rounded last:mr-0 mr-1"
+                        className="text-xs text-white font-semibold inline-block py-1 px-2 uppercase rounded last:mr-0 mr-1"
                       >
                         {task.category.name}
                       </div>

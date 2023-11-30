@@ -81,7 +81,7 @@ function Home() {
     } else {
       let request = {
         id: editValue.id,
-        title: editValue.title,
+        title: editValue.title.trim(),
         progress: parseInt(editValue.progress),
         category: editValue.category._id
           ? editValue.category._id
@@ -129,14 +129,21 @@ function Home() {
   const onSearch = (event) => {
     event.preventDefault();
     let queryString = [];
-
     Object.keys(searchValue).forEach((item) => {
-      if (searchValue[item].length > 0) {
+      if (searchValue[item].length > 0 && item !== "page") {
         let str = `${item}=${searchValue[item]}`;
         queryString.push(str);
       }
     });
+    queryString.push("page=1");
     navigate("?" + queryString.join("&"));
+  };
+
+  const onReset = (event) => {
+    event.preventDefault();
+    setSearchValue(searchTemplate);
+    dispatch(fetchTodos());
+    navigate("/");
   };
 
   // reset state on cancel action
@@ -216,6 +223,7 @@ function Home() {
               handleSearch={onSearch}
               searchValue={searchValue}
               handlePopCreate={() => setShowModal(true)}
+              handleReset={onReset}
             />
 
             <div className="main-container py-3">

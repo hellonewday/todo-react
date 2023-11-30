@@ -37,10 +37,8 @@ export default function CreatePopup(prop) {
   const onCategorySave = (event) => {
     event.preventDefault();
     if (Object.keys(validateLabel(category.name)).length > 0) {
-      console.log(validateLabel(category.name).name);
       setCategoryMsg(validateLabel(category.name).name);
     } else {
-      console.log(category);
       dispatch(addLabel(category));
       setCategory(categoryTemplate);
       setCategoryMsg("");

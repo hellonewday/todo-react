@@ -1,7 +1,7 @@
 import { FaPlus } from "react-icons/fa";
 
 export function SearchBar(prop) {
-  const { labels, onChange, searchValue, handleSearch, handlePopCreate } = prop;
+  const { labels, onChange, searchValue, handleSearch, handlePopCreate, handleReset } = prop;
   return (
     <>
       <div className="grid md:grid-cols-7 grid-cols-1 md:space-x-3 items-center">
@@ -78,13 +78,18 @@ export function SearchBar(prop) {
             </div>
           </div>
         </div>
-        <div className="col-span-1">
-          <p></p>
+        <div className="col-span-1 space-x-1">
           <button
             onClick={handleSearch}
             className="search-btn text-white bg-blue-600 rounded-md px-4 py-2"
           >
             Search
+          </button>
+          <button
+            onClick={handleReset}
+            className="search-btn bg-gray-200 font-light rounded-md px-4 py-2"
+          >
+            Reset
           </button>
         </div>
       </div>
