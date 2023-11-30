@@ -131,7 +131,7 @@ function Home() {
     let queryString = [];
 
     Object.keys(searchValue).forEach((item) => {
-      if (searchValue[item].length > 0 && item !== "page") {
+      if (searchValue[item].length > 0) {
         let str = `${item}=${searchValue[item]}`;
         queryString.push(str);
       }
@@ -151,7 +151,7 @@ function Home() {
     setEditValue(todoTemplate);
   };
 
-  const onPageChange = (page) => {
+  const aggregateUtils = (criteria, value) => {
     let queryString = [];
 
     Object.keys(searchValue).forEach((item) => {
@@ -161,34 +161,21 @@ function Home() {
       }
     });
 
-    if (Object.keys(searchValue).includes("page") === false) {
-      queryString.push(`page=${page}`);
-      navigate("?" + queryString.join("&"));
+    if (Object.keys(searchValue).includes(criteria) === false) {
+      queryString.push(`${criteria}=${value}`);
     } else {
-      queryString = queryString.filter((item) => !item.includes("page"));
-      queryString.push(`page=${page}`);
-      navigate("?" + queryString.join("&"));
+      queryString = queryString.filter((item) => !item.includes(criteria));
+      queryString.push(`${criteria}=${value}`);
     }
+    return "?" + queryString.join("&");
+  };
+
+  const onPageChange = (page) => {
+    navigate(aggregateUtils("page", page));
   };
 
   const onSortChange = (sort) => {
-    let queryString = [];
-
-    Object.keys(searchValue).forEach((item) => {
-      if (searchValue[item].length > 0) {
-        let str = `${item}=${searchValue[item]}`;
-        queryString.push(str);
-      }
-    });
-
-    if (Object.keys(searchValue).includes("sort") === false) {
-      queryString.push(`sort=${sort}`);
-      navigate("?" + queryString.join("&"));
-    } else {
-      queryString = queryString.filter((item) => !item.includes("sort"));
-      queryString.push(`sort=${sort}`);
-      navigate("?" + queryString.join("&"));
-    }
+    navigate(aggregateUtils("sort", sort));
   };
 
   // Hooks

@@ -7,15 +7,12 @@ import {
   FaArrowUp,
   FaArrowDown,
 } from "react-icons/fa";
-import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
-import { sortByProgressBar } from "../../redux/reducers/todos";
-import { queryTodos } from "../../redux/thunk/todos";
+
 
 function ListPlaceHolder(prop) {
   const { data, onDelete, onComplete, onEdit, onReverse, onSort } = prop;
 
-  const dispatch = useDispatch();
   const location = useLocation();
 
   const [isShort, setIsShort] = useState(null);
