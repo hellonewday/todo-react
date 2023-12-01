@@ -45,7 +45,6 @@ export const todoReducer = createSlice({
         state.apiStatus = "loading";
       })
       .addCase(addTodo.fulfilled, (state, action) => {
-        state.todoList.data = [action.payload.data, ...state.todoList.data];
         state.apiStatus = "fulfilled";
         fireToast("success", "Create task successfully", "colored");
       })

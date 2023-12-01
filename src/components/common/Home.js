@@ -184,12 +184,16 @@ function Home() {
     return "?" + queryString.join("&");
   };
 
-  const onPageChange = (page) => {
-    navigate(aggregateUtils("page", page));
-  };
-
   const onSortChange = (criteria, sort) => {
     navigate(aggregateUtils(criteria, sort));
+  };
+
+  const onPageLimitChange = (event) => {
+    navigate(aggregateUtils("limit", event.target.value));
+  };
+
+  const onPageChange = (page) => {
+    navigate(aggregateUtils("page", page));
   };
 
   // Hooks
@@ -205,18 +209,22 @@ function Home() {
     }
   }, [location]);
 
+  // Redirect base on params.
   useEffect(() => {
     dispatch(historyUtil() === null ? fetchTodo() : queryTodo(historyUtil()));
     return () => {
       dispatch(resetStatus());
     };
   }, [historyUtil, dispatch]);
+
+  // Update data whenever edit & create successfully.
   useEffect(() => {
     if (apiStatus === "fulfilled") {
+      dispatch(historyUtil() === null ? fetchTodo() : queryTodo(historyUtil()));
       setShowModal(false);
       setShowEditModal(false);
     }
-  }, [apiStatus]);
+  }, [apiStatus, dispatch, historyUtil]);
 
   return (
     <div>
@@ -268,6 +276,7 @@ function Home() {
                   currentPage={todoList.currentPage}
                   totalCount={todoList.count}
                   onPageChange={onPageChange}
+                  handleChangeLimit={onPageLimitChange}
                 />
               ) : null}
             </div>

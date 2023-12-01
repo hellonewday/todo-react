@@ -1,7 +1,13 @@
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 export const Pagination = (prop) => {
-  const { totalCount, currentPage, totalPages, onPageChange } = prop;
+  const {
+    totalCount,
+    currentPage,
+    totalPages,
+    onPageChange,
+    handleChangeLimit,
+  } = prop;
   const pageNumbers = [];
 
   for (let i = 1; i <= totalPages; i++) {
@@ -9,18 +15,26 @@ export const Pagination = (prop) => {
   }
   return (
     <div className="flex justify-between mt-2">
-      <div className="text-sm text-gray-500">
-        Page {currentPage} of {totalPages} of {totalCount} tasks
+      <div className="flex space-x-3 items-center">
+        <div className="text-sm text-gray-500 space-x-1">
+          <span>Showing rows:</span>
+          <select onChange={handleChangeLimit} defaultValue={5}>
+            <option value={3}>3</option>
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+          </select>
+        </div>
+        <div className="text-sm text-gray-500">
+          {currentPage} of {totalPages} in {totalCount} records
+        </div>
       </div>
       <div className="py-2">
         <nav className="block">
           <ul className="flex pl-0 rounded list-none flex-wrap">
             <li
               style={{
-                display:
-                  currentPage === 1
-                    ? "none"
-                    : "block",
+                display: currentPage === 1 ? "none" : "block",
               }}
             >
               <button
