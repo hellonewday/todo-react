@@ -101,8 +101,7 @@ function ListPlaceHolder(prop) {
           </tr>
         </thead>
         <tbody>
-          {data
-            ? data.map((task) => (
+          {data?.map((task) => (
                 <tr key={task.id} className="border">
                   <td className="border px-4 py-2 break-words">
                     <span>{task.title}</span>
@@ -210,8 +209,7 @@ function ListPlaceHolder(prop) {
                     )}
                   </td>
                 </tr>
-              ))
-            : null}
+              ))}
         </tbody>
       </table>
     </div>
