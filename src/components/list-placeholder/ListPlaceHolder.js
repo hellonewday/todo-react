@@ -125,7 +125,9 @@ function ListPlaceHolder(prop) {
                             className={`text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full ${
                               task.progress === 100
                                 ? "text-emerald-600 bg-emerald-200"
-                                : "text-amber-600 bg-amber-200"
+                                : task.progress === 0
+                                ? "text-amber-600 bg-amber-200"
+                                : "text-blue-600 bg-blue-200"
                             }`}
                           >
                             {progressText(task.progress)}
@@ -136,7 +138,9 @@ function ListPlaceHolder(prop) {
                             className={`text-xs font-semibold inline-block ${
                               task.progress === 100
                                 ? " text-emerald-600"
-                                : "text-amber-600"
+                                : task.progress === 0
+                                ? "text-amber-600"
+                                : "text-blue-600"
                             }`}
                           >
                             {task.progress}%
@@ -147,7 +151,9 @@ function ListPlaceHolder(prop) {
                         className={`overflow-hidden h-2 mb-4 text-xs flex rounded ${
                           task.progress === 100
                             ? "bg-emerald-200"
-                            : "bg-amber-200"
+                            : task.progress === 0
+                            ? "bg-amber-200"
+                            : "bg-blue-200"
                         }`}
                       >
                         <div
@@ -155,7 +161,9 @@ function ListPlaceHolder(prop) {
                           className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${
                             task.progress === 100
                               ? "bg-emerald-500"
-                              : "bg-amber-500"
+                              : task.progress === 0
+                              ? "bg-amber-500"
+                              : "bg-blue-500"
                           }`}
                         ></div>
                       </div>
