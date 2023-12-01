@@ -10,7 +10,7 @@ export const Pagination = (prop) => {
   return (
     <div className="flex justify-between mt-2">
       <div className="text-sm text-gray-500">
-        {currentPage} to {totalPages} of {totalCount} tasks
+        Page {currentPage} of {totalPages} of {totalCount} tasks
       </div>
       <div className="py-2">
         <nav className="block">

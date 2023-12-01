@@ -3,16 +3,16 @@ import {
   addTodo,
   completeTodo,
   editTodo,
-  fetchTodos,
-  queryTodos,
+  fetchTodo,
+  queryTodo,
   removeTodo,
-} from "../thunk/todos";
+} from "../thunk/todo";
 import { fireToast } from "../../utils/toast.utils";
 
-export const todosReducer = createSlice({
-  name: "todos",
+export const todoReducer = createSlice({
+  name: "todo",
   initialState: {
-    todos: [],
+    todoList: [],
     apiStatus: "idle",
   },
   reducers: {
@@ -20,32 +20,32 @@ export const todosReducer = createSlice({
       state.apiStatus = "idle";
     },
     sortByProgressBar: (state, action) => {
-      let sortTodos = state.todos.data.toSorted((a, b) => {
+      let sortTodo = state.todoList.data.toSorted((a, b) => {
         return action.payload === "ASCENDING"
           ? a.progress - b.progress
           : b.progress - a.progress;
       });
 
-      state.todos.data = sortTodos;
+      state.todoList.data = sortTodo;
     },
   },
   extraReducers(builder) {
     builder
-      .addCase(fetchTodos.pending, (state, action) => {
+      .addCase(fetchTodo.pending, (state, action) => {
         state.apiStatus = "loading";
       })
-      .addCase(fetchTodos.fulfilled, (state, action) => {
+      .addCase(fetchTodo.fulfilled, (state, action) => {
         state.apiStatus = "idle";
-        state.todos = action.payload;
+        state.todoList = action.payload;
       })
-      .addCase(fetchTodos.rejected, (state, action) => {
+      .addCase(fetchTodo.rejected, (state, action) => {
         state.apiStatus = "error";
       })
       .addCase(addTodo.pending, (state, action) => {
         state.apiStatus = "loading";
       })
       .addCase(addTodo.fulfilled, (state, action) => {
-        state.todos.data = [...state.todos.data, action.payload.data];
+        state.todoList.data = [action.payload.data, ...state.todoList.data];
         state.apiStatus = "fulfilled";
         fireToast("success", "Create task successfully", "colored");
       })
@@ -57,7 +57,7 @@ export const todosReducer = createSlice({
         state.apiStatus = "loading";
       })
       .addCase(removeTodo.fulfilled, (state, action) => {
-        state.todos.data = state.todos.data.filter(
+        state.todoList.data = state.todoList.data.filter(
           (todo) => todo.id !== action.payload.id
         );
         state.apiStatus = "fulfilled";
@@ -70,7 +70,7 @@ export const todosReducer = createSlice({
         state.apiStatus = "pending";
       })
       .addCase(editTodo.fulfilled, (state, action) => {
-        let updateTodo = state.todos.data.find(
+        let updateTodo = state.todoList.data.find(
           (todo) => todo.id === action.payload.id
         );
         if (updateTodo) {
@@ -89,7 +89,7 @@ export const todosReducer = createSlice({
         state.apiStatus = "pending";
       })
       .addCase(completeTodo.fulfilled, (state, action) => {
-        let updateTodo = state.todos.data.find(
+        let updateTodo = state.todoList.data.find(
           (todo) => todo.id === action.payload.id
         );
         if (updateTodo) {
@@ -102,19 +102,19 @@ export const todosReducer = createSlice({
       .addCase(completeTodo.rejected, (state, action) => {
         state.apiStatus = "error";
       })
-      .addCase(queryTodos.pending, (state, action) => {
+      .addCase(queryTodo.pending, (state, action) => {
         state.apiStatus = "pending";
       })
-      .addCase(queryTodos.fulfilled, (state, action) => {
+      .addCase(queryTodo.fulfilled, (state, action) => {
         state.apiStatus = "idle";
-        state.todos = action.payload;
+        state.todoList = action.payload;
       })
-      .addCase(queryTodos.rejected, (state, action) => {
+      .addCase(queryTodo.rejected, (state, action) => {
         state.apiStatus = "error";
       });
   },
 });
 
-export const { resetStatus, sortByProgressBar } = todosReducer.actions;
+export const { resetStatus, sortByProgressBar } = todoReducer.actions;
 
-export default todosReducer.reducer;
+export default todoReducer.reducer;

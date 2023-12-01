@@ -7,40 +7,66 @@ import {
   FaArrowUp,
   FaArrowDown,
 } from "react-icons/fa";
-import { useLocation } from "react-router-dom";
-
 
 function ListPlaceHolder(prop) {
   const { data, onDelete, onComplete, onEdit, onReverse, onSort } = prop;
 
-  const location = useLocation();
+  const [isProgressSort, setIsProgressSort] = useState(null);
+  const [isTaskSort, setIsTaskSort] = useState(null);
+  const [isCreatedSort, setIsCreatedSort] = useState(null);
 
-  const [isShort, setIsShort] = useState(null);
-  const progressText = (progress) => {
+  const progressUtil = (progress) => {
     if (progress > 0 && progress < 100) {
-      return "In Progress";
-    } else if (progress === 100) {
-      return "Completed";
-    } else {
-      return "Open";
+      return ["In Progress", "blue"];
+    }
+    if (progress === 100) {
+      return ["Completed", "emerald"];
+    }
+    if (progress === 0) {
+      return ["Open", "amber"];
     }
   };
 
-  const sortByProgress = (sort) => {
+  const sortByProgressUtil = (sort) => {
     if (sort === true) return <FaArrowDown />;
     else if (sort === false) return <FaArrowUp />;
     else return null;
   };
 
-  const handleSort = () => {
-    console.log(location.search);
-    if (isShort == null) {
-      setIsShort(true);
+  const handleSortByProgress = () => {
+    setIsTaskSort(null);
+    setIsCreatedSort(null);
+
+    if (isProgressSort == null) {
+      setIsProgressSort(true);
     } else {
-      setIsShort(!isShort);
+      setIsProgressSort(!isProgressSort);
     }
 
-    onSort(isShort ? 1 : -1);
+    onSort("due", isProgressSort ? 1 : -1);
+  };
+
+  const handleSortByTask = () => {
+    setIsProgressSort(null);
+    setIsCreatedSort(null);
+    if (isTaskSort == null) {
+      setIsTaskSort(true);
+    } else {
+      setIsTaskSort(!isTaskSort);
+    }
+    onSort("task", isTaskSort ? 1 : -1);
+  };
+
+  const handleSortByCreated = () => {
+    setIsProgressSort(null);
+    setIsTaskSort(null);
+
+    if (isCreatedSort == null) {
+      setIsCreatedSort(true);
+    } else {
+      setIsCreatedSort(!isCreatedSort);
+    }
+    onSort("created", isCreatedSort ? 1 : -1);
   };
 
   return (
@@ -48,12 +74,29 @@ function ListPlaceHolder(prop) {
       <table className="w-full border-collapse w-100">
         <thead>
           <tr className="bg-gray-100">
-            <th className="border px-4 py-2 tasks-col">Task</th>
+            <th
+              className="border px-4 py-2 tasks-col space-x-2"
+              onClick={() => handleSortByTask()}
+            >
+              <div className="flex items-center space-x-2">
+                {sortByProgressUtil(isTaskSort)}
+                <span>Task</span>
+              </div>
+            </th>
+            <th
+              className="hidden md:table-cell border px-4 py-2 space-x-2"
+              onClick={() => handleSortByCreated()}
+            >
+              <div className="flex items-center space-x-2">
+                {sortByProgressUtil(isCreatedSort)}
+                <span>Last updated</span>
+              </div>
+            </th>
             <th
               className="border px-4 py-2 progress-col space-x-2"
-              onClick={() => handleSort()}
+              onClick={() => handleSortByProgress()}
             >
-              {sortByProgress(isShort)}
+              {sortByProgressUtil(isProgressSort)}
               <span>Progress</span>
             </th>
             <th className="border px-4 py-2 w-20 actions-col">Actions</th>
@@ -63,7 +106,7 @@ function ListPlaceHolder(prop) {
           {data
             ? data.map((task) => (
                 <tr key={task.id} className="border">
-                  <td className="border px-4 py-2 break-all">
+                  <td className="border px-4 py-2 break-words">
                     <span>{task.title}</span>
                     <br />
                     {task.category ? (
@@ -75,44 +118,38 @@ function ListPlaceHolder(prop) {
                       </div>
                     ) : null}
                   </td>
+                  <td className="hidden md:block px-4 py-2">{task.updated}</td>
                   <td className="border px-4 py-2">
                     <div className="relative pt-1">
                       <div className="flex mb-2 items-center justify-between">
                         <div>
                           <span
-                            className={`text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full ${
-                              task.progress > 0
-                                ? "text-emerald-600 bg-emerald-200"
-                                : "text-amber-600 bg-amber-200"
-                            }`}
+                            className={`text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full 
+                            text-${progressUtil(task.progress)[1]}-600 
+                            bg-${progressUtil(task.progress)[1]}-200`}
                           >
-                            {progressText(task.progress)}
+                            {progressUtil(task.progress)[0]}
                           </span>
                         </div>
                         <div className="text-right">
                           <span
-                            className={`text-xs font-semibold inline-block ${
-                              task.progress > 0
-                                ? " text-emerald-600"
-                                : "text-amber-600"
-                            }`}
+                            className={`text-xs font-semibold inline-block text-${
+                              progressUtil(task.progress)[1]
+                            }-600`}
                           >
                             {task.progress}%
                           </span>
                         </div>
                       </div>
                       <div
-                        className={`overflow-hidden h-2 mb-4 text-xs flex rounded ${
-                          task.progress > 0 ? "bg-emerald-200" : "bg-amber-200"
-                        }`}
+                        className={`overflow-hidden h-2 mb-4 text-xs flex rounded bg-${
+                          progressUtil(task.progress)[1]
+                        }-200`}
                       >
                         <div
                           style={{ width: `${task.progress}%` }}
-                          className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${
-                            task.progress > 0
-                              ? "bg-emerald-500"
-                              : "bg-amber-500"
-                          }`}
+                          className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center 
+                          bg-${progressUtil(task.progress)[1]}-500`}
                         ></div>
                       </div>
                     </div>

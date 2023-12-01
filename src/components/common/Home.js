@@ -8,11 +8,11 @@ import {
   addTodo,
   completeTodo,
   editTodo,
-  fetchTodos,
-  queryTodos,
+  fetchTodo,
+  queryTodo,
   removeTodo,
-} from "../../redux/thunk/todos";
-import { resetStatus } from "../../redux/reducers/todos";
+} from "../../redux/thunk/todo";
+import { resetStatus } from "../../redux/reducers/todo";
 
 import ListPlaceHolder from "../list-placeholder/ListPlaceHolder";
 import CreatePopup from "../create-todo/CreateTodo";
@@ -32,16 +32,16 @@ const searchTemplate = {
   category: "",
   progress: "",
 };
+
 function Home() {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { todos, apiStatus } = useSelector((state) => state.todos);
+  const { todoList, apiStatus } = useSelector((state) => state.todo);
   const { labels } = useSelector((state) => state.labels);
 
   const [editValue, setEditValue] = useState(todoTemplate);
-  const [value, setValue] = useState(todoTemplate);
   const [searchValue, setSearchValue] = useState(searchTemplate);
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -50,12 +50,8 @@ function Home() {
   const [invalidUpdate, setInvalidUpdate] = useState("");
 
   // Create action
-  const onCreateChange = (event) => {
-    setValue({ ...value, [event.target.name]: event.target.value });
-  };
 
-  const onCreateSave = (event) => {
-    event.preventDefault();
+  const onCreateSave = (value) => {
     if (Object.keys(validateTodo(value)).length > 0) {
       setInvalidCreate(validateTodo(value));
     } else {
@@ -67,17 +63,12 @@ function Home() {
 
   // Edit action
   const onEdit = (id) => {
-    let editVal = todos.data.filter((item) => item.id === id)[0];
+    let editVal = todoList.data.filter((item) => item.id === id)[0];
     setEditValue(editVal);
     setShowEditModal(true);
   };
-  const onEditChange = (event) => {
-    setEditValue({ ...editValue, [event.target.name]: event.target.value });
-  };
 
-  const onEditSave = (event) => {
-    event.preventDefault();
-
+  const onEditSave = (editValue) => {
     if (Object.keys(validateTodo(editValue)).length > 0) {
       setInvalidUpdate(validateTodo(editValue));
     } else {
@@ -85,6 +76,7 @@ function Home() {
         id: editValue.id,
         title: editValue.title.trim(),
         progress: parseInt(editValue.progress),
+        description: editValue.description.trim(),
         category: editValue.category._id
           ? editValue.category._id
           : editValue.category,
@@ -93,7 +85,6 @@ function Home() {
 
       setInvalidUpdate(false);
       dispatch(editTodo(request));
-      navigate("/");
       setSearchValue(searchTemplate);
     }
   };
@@ -144,7 +135,7 @@ function Home() {
   const onReset = (event) => {
     event.preventDefault();
     setSearchValue(searchTemplate);
-    dispatch(fetchTodos());
+    dispatch(fetchTodo());
     navigate("/");
   };
 
@@ -152,7 +143,6 @@ function Home() {
   const cancelModal = () => {
     setShowModal(false);
     setInvalidCreate("");
-    setValue(todoTemplate);
   };
   const cancelEdit = () => {
     setShowEditModal(false);
@@ -170,12 +160,27 @@ function Home() {
       }
     });
 
-    if (Object.keys(searchValue).includes(criteria) === false) {
-      queryString.push(`${criteria}=${value}`);
-    } else {
+    if (Object.keys(searchValue).includes(criteria) === true) {
       queryString = queryString.filter((item) => !item.includes(criteria));
-      queryString.push(`${criteria}=${value}`);
     }
+    queryString.push(`${criteria}=${value}`);
+
+    if (criteria === "due") {
+      queryString = queryString.filter(
+        (item) => !item.includes("task") && !item.includes("created")
+      );
+    }
+    if (criteria === "task") {
+      queryString = queryString.filter(
+        (item) => !item.includes("due") && !item.includes("created")
+      );
+    }
+    if (criteria === "created") {
+      queryString = queryString.filter(
+        (item) => !item.includes("due") && !item.includes("task")
+      );
+    }
+
     return "?" + queryString.join("&");
   };
 
@@ -183,8 +188,8 @@ function Home() {
     navigate(aggregateUtils("page", page));
   };
 
-  const onSortChange = (sort) => {
-    navigate(aggregateUtils("sort", sort));
+  const onSortChange = (criteria, sort) => {
+    navigate(aggregateUtils(criteria, sort));
   };
 
   // Hooks
@@ -201,7 +206,7 @@ function Home() {
   }, [location]);
 
   useEffect(() => {
-    dispatch(historyUtil() === null ? fetchTodos() : queryTodos(historyUtil()));
+    dispatch(historyUtil() === null ? fetchTodo() : queryTodo(historyUtil()));
     return () => {
       dispatch(resetStatus());
     };
@@ -210,7 +215,6 @@ function Home() {
     if (apiStatus === "fulfilled") {
       setShowModal(false);
       setShowEditModal(false);
-      setValue(todoTemplate);
     }
   }, [apiStatus]);
 
@@ -232,9 +236,7 @@ function Home() {
               <CreatePopup
                 modalName={"Create new task"}
                 onCreateSave={onCreateSave}
-                todo={value}
                 showModal={showModal}
-                onChange={onCreateChange}
                 onShowModal={cancelModal}
                 isFormInvalid={invalidCreate}
                 saveButtonName="Create"
@@ -245,14 +247,13 @@ function Home() {
                 onCreateSave={onEditSave}
                 todo={editValue}
                 showModal={showEditModal}
-                onChange={onEditChange}
                 onShowModal={cancelEdit}
                 isFormInvalid={invalidUpdate}
                 saveButtonName={"Save"}
               />
 
               <ListPlaceHolder
-                data={todos.data}
+                data={todoList.data}
                 onDelete={onDelete}
                 listType="uncompleted"
                 onComplete={onCompleted}
@@ -261,11 +262,11 @@ function Home() {
                 onReverse={onReverse}
               />
 
-              {todos.count > 5 ? (
+              {todoList.count > 5 ? (
                 <Pagination
-                  totalPages={todos.totalPages}
-                  currentPage={todos.currentPage}
-                  totalCount={todos.count}
+                  totalPages={todoList.totalPages}
+                  currentPage={todoList.currentPage}
+                  totalCount={todoList.count}
                   onPageChange={onPageChange}
                 />
               ) : null}

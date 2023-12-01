@@ -1,6 +1,6 @@
 import api from ".";
 
-export const fetchTodosAPI = async () => {
+export const fetchTodoAPI = async () => {
   try {
     let response = await api.get("/lists");
     return response.data;
@@ -9,7 +9,7 @@ export const fetchTodosAPI = async () => {
   }
 };
 
-export const queryTodosAPI = async (query) => {
+export const queryTodoAPI = async (query) => {
   try {
     let response = await api.get("/lists?" + query);
     return response.data;

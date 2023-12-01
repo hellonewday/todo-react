@@ -6,29 +6,29 @@ import {
   FETCH_TODO,
   QUERY_TODO,
   REMOVE_TODO,
-} from "../constants/todos";
+} from "../constants/todo";
 import {
   addTodoAPI,
   completeTodoAPI,
   editTodoAPI,
-  fetchTodosAPI,
-  queryTodosAPI,
+  fetchTodoAPI,
+  queryTodoAPI,
   removeTodoAPI,
-} from "../apis/todos";
+} from "../apis/todo";
 
-export const fetchTodos = createAsyncThunk(FETCH_TODO, async () => {
+export const fetchTodo = createAsyncThunk(FETCH_TODO, async () => {
   try {
-    const todos = await fetchTodosAPI();
-    return todos;
+    const todoList = await fetchTodoAPI();
+    return todoList;
   } catch (error) {
     throw new Error(error.message);
   }
 });
 
-export const queryTodos = createAsyncThunk(QUERY_TODO, async (queryStr) => {
+export const queryTodo = createAsyncThunk(QUERY_TODO, async (queryStr) => {
   try {
-    const todos = await queryTodosAPI(queryStr);
-    return todos;
+    const todoList = await queryTodoAPI(queryStr);
+    return todoList;
   } catch (error) {
     throw new Error(error.message);
   }

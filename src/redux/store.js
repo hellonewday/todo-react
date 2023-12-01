@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import todosReducer from "./reducers/todos";
+import todoReducer from "./reducers/todo";
 import labelReducer from "./reducers/labels";
 
 export const setUpStore = () => {
   return configureStore({
     reducer: {
-      todos: todosReducer,
+      todo: todoReducer,
       labels: labelReducer,
     },
   });

@@ -5,12 +5,20 @@ import { TwitterPicker } from "react-color";
 import { validateLabel } from "../../utils/validation.utils";
 import InputText from "../common/InputText";
 import Button from "../common/Button";
-import { FaCheck } from "react-icons/fa";
 
 const categoryTemplate = {
   name: "",
   color: "",
 };
+
+const todoTemplate = {
+  title: "",
+  completed: false,
+  description: "",
+  progress: 0,
+  category: "",
+};
+
 export default function CreatePopup(prop) {
   const {
     showModal,
@@ -18,7 +26,6 @@ export default function CreatePopup(prop) {
     modalName,
     onCreateSave,
     todo,
-    onChange,
     isFormInvalid,
     saveButtonName,
   } = prop;
@@ -29,8 +36,17 @@ export default function CreatePopup(prop) {
 
   const [category, setCategory] = useState(categoryTemplate);
   const [isCreate, setIsCreate] = useState(false);
-
+  const [formValue, setFormValue] = useState(todo || todoTemplate);
   const [categoryMsg, setCategoryMsg] = useState("");
+
+  const onFormValueChange = (event) => {
+    setFormValue({ ...formValue, [event.target.name]: event.target.value });
+  };
+
+  const onFormValueSave = (event) => {
+    event.preventDefault();
+    onCreateSave(formValue);
+  };
 
   const onCategoryChange = (event) => {
     setCategory({ ...category, [event.target.name]: event.target.value });
@@ -71,6 +87,14 @@ export default function CreatePopup(prop) {
     }
   }, [apiLabelStatus]);
 
+  useEffect(() => {
+    if (showModal && todo) {
+      setFormValue(todo);
+    } else {
+      setFormValue(todoTemplate);
+    }
+  }, [showModal, todo]);
+
   return (
     <>
       {showModal ? (
@@ -97,8 +121,8 @@ export default function CreatePopup(prop) {
                       labelName={"Task Name"}
                       placeholder="Type task name"
                       isFormInvalid={isFormInvalid?.title}
-                      onChange={onChange}
-                      value={todo.title}
+                      onChange={onFormValueChange}
+                      value={formValue.title}
                     />
                   </div>
                   <div className="col-span-2">
@@ -106,8 +130,8 @@ export default function CreatePopup(prop) {
                       name="description"
                       labelName={"Description"}
                       placeholder="Description..."
-                      onChange={onChange}
-                      value={todo.description}
+                      onChange={onFormValueChange}
+                      value={formValue.description}
                     />
                   </div>
 
@@ -117,9 +141,9 @@ export default function CreatePopup(prop) {
                     </label>
                     <div className="relative">
                       <select
-                        onChange={onChange}
+                        onChange={onFormValueChange}
                         name="category"
-                        value={todo.category ? todo.category._id : ""}
+                        value={formValue.category ? formValue.category._id : ""}
                         className=" bg-gray-200 border border-gray-200 text-gray-700 focus:bg-white focus:border-gray-500
                         py-3 px-4 pr-8 rounded leading-tight focus:outline-none block appearance-none w-full"
                         id="grid-state"
@@ -199,15 +223,15 @@ export default function CreatePopup(prop) {
                   </div>
 
                   <div className="col-span-2">
-                    <p>Progress: {todo.progress || 0}%</p>
+                    <p>Progress: {formValue.progress || 0}%</p>
                     <input
                       style={{ width: "100%" }}
                       type="range"
                       min="0"
                       max="100"
                       name="progress"
-                      value={todo.progress || 0}
-                      onChange={onChange}
+                      value={formValue.progress || 0}
+                      onChange={onFormValueChange}
                     />
                   </div>
                 </div>
@@ -222,7 +246,7 @@ export default function CreatePopup(prop) {
                   </button>
                   <Button
                     theme="submit"
-                    handleClick={onCreateSave}
+                    handleClick={onFormValueSave}
                     styles={"font-bold"}
                   >
                     <span>{saveButtonName}</span>
