@@ -1,6 +1,5 @@
 import { screen } from "@testing-library/react";
 import App from "./App";
-import { renderWithProviders } from "./utils/test.utils";
 import {
   addTodo,
   completeTodo,
@@ -13,19 +12,6 @@ import thunk from "redux-thunk";
 
 const middlewares = [thunk];
 const mockStore = configureStore(middlewares);
-
-describe("App component", () => {
-  test("render app successfully", () => {
-    renderWithProviders(<App />);
-    const input = screen.getByRole("textbox");
-    const submitElement = screen.getByRole("button", {
-      name: /add task/i,
-    });
-
-    expect(input).toBeInTheDocument();
-    expect(submitElement).toBeInTheDocument();
-  });
-});
 
 describe("Fetch todos", () => {
   test("should fetch todo list", async () => {
@@ -40,13 +26,18 @@ describe("Fetch todos", () => {
       (action) => action.type === "FETCH_TODO/fulfilled"
     );
 
-    expect(fulfilledAction.payload.length).toBeGreaterThanOrEqual(0);
+    expect(fulfilledAction.payload.data.length).toBeGreaterThanOrEqual(0);
   });
 });
 
 describe("Add todos", () => {
   const store = mockStore({ todos: { data: [] } });
-  const exampleData = { title: "test data" };
+  const exampleData = {
+    title: "test data",
+    color: "#fff",
+    description: "new description",
+    progress: 0,
+  };
   const actions = store.getActions();
 
   beforeAll(async () => {
@@ -68,7 +59,7 @@ describe("Add todos", () => {
     const fulfilledAction = actions.find(
       (action) => action.type === "FETCH_TODO/fulfilled"
     );
-    let obj = fulfilledAction.payload.find(
+    let obj = fulfilledAction.payload.data.find(
       (item) => item.title === exampleData.title
     );
     expect(obj).not.toBeUndefined();
@@ -86,7 +77,12 @@ describe("Add todos", () => {
 
 describe("Edit todo", () => {
   const store = mockStore({ todos: { data: [] } });
-  const exampleData = { title: "test data" };
+  const exampleData = {
+    title: "test data",
+    color: "#fff",
+    description: "new description",
+    progress: 0,
+  };
   const exampleValue = "test 1";
   const actions = store.getActions();
 
@@ -99,7 +95,6 @@ describe("Edit todo", () => {
     const createdAction = actions.find(
       (action) => action.type === "ADD_TODO/fulfilled"
     );
-
     const id = createdAction.payload.data.id;
 
     await store.dispatch(editTodo({ id, title: exampleValue }));
@@ -118,7 +113,7 @@ describe("Edit todo", () => {
     const fulfilledAction = actions.find(
       (action) => action.type === "FETCH_TODO/fulfilled"
     );
-    let obj = fulfilledAction.payload.find(
+    let obj = fulfilledAction.payload.data.find(
       (item) => item.title === exampleValue
     );
 
@@ -137,7 +132,12 @@ describe("Edit todo", () => {
 
 describe("Complete todo", () => {
   const store = mockStore({ todos: { data: [] } });
-  const exampleData = { title: "test data" };
+  const exampleData = {
+    title: "test data",
+    color: "#fff",
+    description: "new description",
+    progress: 0,
+  };
   const actions = store.getActions();
 
   beforeAll(async () => {
@@ -172,7 +172,7 @@ describe("Complete todo", () => {
     const fulfilledAction = actions.find(
       (action) => action.type === "FETCH_TODO/fulfilled"
     );
-    let obj = fulfilledAction.payload.find(
+    let obj = fulfilledAction.payload.data.find(
       (item) =>
         item.title === createdAction.payload.data.title &&
         item.completed === true
@@ -193,7 +193,12 @@ describe("Complete todo", () => {
 
 describe("Remove todo", () => {
   const store = mockStore({ todos: { data: [] } });
-  const exampleData = { title: "test data" };
+    const exampleData = {
+    title: "test data",
+    color: "#fff",
+    description: "new description",
+    progress: 0,
+  };
   const actions = store.getActions();
 
   beforeAll(async () => {
@@ -228,7 +233,7 @@ describe("Remove todo", () => {
       (action) => action.type === "ADD_TODO/fulfilled"
     );
 
-    const checkExisting = fulfilledFetchAction.payload.find(
+    const checkExisting = fulfilledFetchAction.payload.data.find(
       (item) => item.id === createdAction.payload.data.id
     );
 

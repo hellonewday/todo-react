@@ -53,6 +53,7 @@ function Home() {
   const onCreateChange = (event) => {
     setValue({ ...value, [event.target.name]: event.target.value });
   };
+
   const onCreateSave = (event) => {
     event.preventDefault();
     if (Object.keys(validateTodo(value)).length > 0) {
@@ -73,6 +74,7 @@ function Home() {
   const onEditChange = (event) => {
     setEditValue({ ...editValue, [event.target.name]: event.target.value });
   };
+
   const onEditSave = (event) => {
     event.preventDefault();
 
@@ -230,7 +232,7 @@ function Home() {
               <CreatePopup
                 modalName={"Create new task"}
                 onCreateSave={onCreateSave}
-                titleValue={value}
+                todo={value}
                 showModal={showModal}
                 onChange={onCreateChange}
                 onShowModal={cancelModal}
@@ -241,7 +243,7 @@ function Home() {
               <CreatePopup
                 modalName={"Edit task"}
                 onCreateSave={onEditSave}
-                titleValue={editValue}
+                todo={editValue}
                 showModal={showEditModal}
                 onChange={onEditChange}
                 onShowModal={cancelEdit}

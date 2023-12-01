@@ -1,7 +1,15 @@
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaSearch } from "react-icons/fa";
+import Button from "./Button";
 
 export function SearchBar(prop) {
-  const { labels, onChange, searchValue, handleSearch, handlePopCreate, handleReset } = prop;
+  const {
+    labels,
+    onChange,
+    searchValue,
+    handleSearch,
+    handlePopCreate,
+    handleReset,
+  } = prop;
   return (
     <>
       <div className="grid md:grid-cols-7 grid-cols-1 md:space-x-3 items-center">
@@ -78,28 +86,28 @@ export function SearchBar(prop) {
             </div>
           </div>
         </div>
-        <div className="col-span-1 space-x-1">
-          <button
-            onClick={handleSearch}
-            className="search-btn text-white bg-blue-600 rounded-md px-4 py-2"
+        <div className="col-span-1 space-x-1 flex">
+          <Button
+            theme="primary"
+            styles={"search-btn"}
+            handleClick={handleSearch}
           >
-            Search
-          </button>
-          <button
-            onClick={handleReset}
-            className="search-btn bg-gray-200 font-light rounded-md px-4 py-2"
+            <FaSearch /> <span>Search</span>
+          </Button>
+
+          <Button
+            theme="default"
+            styles={"search-btn"}
+            handleClick={handleReset}
           >
-            Reset
-          </button>
+            <span>Reset</span>
+          </Button>
         </div>
       </div>
       <div className="col-span-1">
-        <button
-          onClick={handlePopCreate}
-          className="text-white bg-red-600 rounded-md px-4 py-2 flex space-x-2 items-center"
-        >
+        <Button theme="attention" handleClick={handlePopCreate}>
           <FaPlus /> <span>Create new</span>
-        </button>
+        </Button>
       </div>
     </>
   );

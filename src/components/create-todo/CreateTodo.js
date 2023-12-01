@@ -4,6 +4,8 @@ import { addLabel, fetchLabels } from "../../redux/thunk/labels";
 import { TwitterPicker } from "react-color";
 import { validateLabel } from "../../utils/validation.utils";
 import InputText from "../common/InputText";
+import Button from "../common/Button";
+import { FaCheck } from "react-icons/fa";
 
 const categoryTemplate = {
   name: "",
@@ -15,7 +17,7 @@ export default function CreatePopup(prop) {
     onShowModal,
     modalName,
     onCreateSave,
-    titleValue,
+    todo,
     onChange,
     isFormInvalid,
     saveButtonName,
@@ -96,7 +98,7 @@ export default function CreatePopup(prop) {
                       placeholder="Type task name"
                       isFormInvalid={isFormInvalid?.title}
                       onChange={onChange}
-                      value={titleValue.title}
+                      value={todo.title}
                     />
                   </div>
                   <div className="col-span-2">
@@ -105,7 +107,7 @@ export default function CreatePopup(prop) {
                       labelName={"Description"}
                       placeholder="Description..."
                       onChange={onChange}
-                      value={titleValue.description}
+                      value={todo.description}
                     />
                   </div>
 
@@ -117,9 +119,7 @@ export default function CreatePopup(prop) {
                       <select
                         onChange={onChange}
                         name="category"
-                        value={
-                          titleValue.category ? titleValue.category._id : ""
-                        }
+                        value={todo.category ? todo.category._id : ""}
                         className=" bg-gray-200 border border-gray-200 text-gray-700 focus:bg-white focus:border-gray-500
                         py-3 px-4 pr-8 rounded leading-tight focus:outline-none block appearance-none w-full"
                         id="grid-state"
@@ -199,14 +199,14 @@ export default function CreatePopup(prop) {
                   </div>
 
                   <div className="col-span-2">
-                    <p>Progress: {titleValue.progress || 0}%</p>
+                    <p>Progress: {todo.progress || 0}%</p>
                     <input
                       style={{ width: "100%" }}
                       type="range"
                       min="0"
                       max="100"
                       name="progress"
-                      value={titleValue.progress || 0}
+                      value={todo.progress || 0}
                       onChange={onChange}
                     />
                   </div>
@@ -220,13 +220,13 @@ export default function CreatePopup(prop) {
                   >
                     Close
                   </button>
-                  <button
-                    className="bg-emerald-500 text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
-                    type="button"
-                    onClick={onCreateSave}
+                  <Button
+                    theme="submit"
+                    handleClick={onCreateSave}
+                    styles={"font-bold"}
                   >
-                    {saveButtonName}
-                  </button>
+                    <span>{saveButtonName}</span>
+                  </Button>
                 </div>
               </div>
             </div>
