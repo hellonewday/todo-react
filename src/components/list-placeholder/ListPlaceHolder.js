@@ -15,15 +15,13 @@ function ListPlaceHolder(prop) {
   const [isTaskSort, setIsTaskSort] = useState(null);
   const [isCreatedSort, setIsCreatedSort] = useState(null);
 
-  const progressUtil = (progress) => {
+  const progressText = (progress) => {
     if (progress > 0 && progress < 100) {
-      return ["In Progress", "blue"];
-    }
-    if (progress === 100) {
-      return ["Completed", "emerald"];
-    }
-    if (progress === 0) {
-      return ["Open", "amber"];
+      return "In Progress";
+    } else if (progress === 100) {
+      return "Completed";
+    } else {
+      return "Open";
     }
   };
 
@@ -124,32 +122,41 @@ function ListPlaceHolder(prop) {
                       <div className="flex mb-2 items-center justify-between">
                         <div>
                           <span
-                            className={`text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full 
-                            text-${progressUtil(task.progress)[1]}-600 
-                            bg-${progressUtil(task.progress)[1]}-200`}
+                            className={`text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full ${
+                              task.progress === 100
+                                ? "text-emerald-600 bg-emerald-200"
+                                : "text-amber-600 bg-amber-200"
+                            }`}
                           >
-                            {progressUtil(task.progress)[0]}
+                            {progressText(task.progress)}
                           </span>
                         </div>
                         <div className="text-right">
                           <span
-                            className={`text-xs font-semibold inline-block text-${
-                              progressUtil(task.progress)[1]
-                            }-600`}
+                            className={`text-xs font-semibold inline-block ${
+                              task.progress === 100
+                                ? " text-emerald-600"
+                                : "text-amber-600"
+                            }`}
                           >
                             {task.progress}%
                           </span>
                         </div>
                       </div>
                       <div
-                        className={`overflow-hidden h-2 mb-4 text-xs flex rounded bg-${
-                          progressUtil(task.progress)[1]
-                        }-200`}
+                        className={`overflow-hidden h-2 mb-4 text-xs flex rounded ${
+                          task.progress === 100
+                            ? "bg-emerald-200"
+                            : "bg-amber-200"
+                        }`}
                       >
                         <div
                           style={{ width: `${task.progress}%` }}
-                          className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center 
-                          bg-${progressUtil(task.progress)[1]}-500`}
+                          className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${
+                            task.progress === 100
+                              ? "bg-emerald-500"
+                              : "bg-amber-500"
+                          }`}
                         ></div>
                       </div>
                     </div>

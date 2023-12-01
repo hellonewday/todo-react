@@ -78,6 +78,7 @@ export const todoReducer = createSlice({
           updateTodo.progress = action.payload.progress;
           updateTodo.completed = action.payload.completed;
           updateTodo.category = action.payload.category;
+          updateTodo.updated = action.payload.updated;
         }
         state.apiStatus = "fulfilled";
         fireToast("info", "Update task successfully", "colored");
@@ -95,6 +96,7 @@ export const todoReducer = createSlice({
         if (updateTodo) {
           updateTodo.completed = action.payload.completed;
           updateTodo.progress = 100;
+          updateTodo.updated = action.payload.updated;
         }
         state.apiStatus = "fulfilled";
         fireToast("success", "Update task successfully", "light");
