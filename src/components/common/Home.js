@@ -45,6 +45,7 @@ function Home() {
   const [searchValue, setSearchValue] = useState(searchTemplate);
   const [showModal, setShowModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [limitPerPage, setLimitPerPage] = useState(5);
 
   const [invalidCreate, setInvalidCreate] = useState("");
   const [invalidUpdate, setInvalidUpdate] = useState("");
@@ -135,6 +136,7 @@ function Home() {
   const onReset = (event) => {
     event.preventDefault();
     setSearchValue(searchTemplate);
+    setLimitPerPage(5);
     dispatch(fetchTodo());
     navigate("/");
   };
@@ -189,6 +191,7 @@ function Home() {
   };
 
   const onPageLimitChange = (event) => {
+    setLimitPerPage(event.target.value);
     navigate(aggregateUtils("limit", event.target.value));
   };
 
@@ -276,6 +279,7 @@ function Home() {
                   currentPage={todoList.currentPage}
                   totalCount={todoList.count}
                   onPageChange={onPageChange}
+                  limit={limitPerPage}
                   handleChangeLimit={onPageLimitChange}
                 />
               ) : null}

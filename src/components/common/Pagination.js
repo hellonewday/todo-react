@@ -7,6 +7,7 @@ export const Pagination = (prop) => {
     totalPages,
     onPageChange,
     handleChangeLimit,
+    limit
   } = prop;
   const pageNumbers = [];
 
@@ -18,12 +19,13 @@ export const Pagination = (prop) => {
       <div className="flex space-x-3 items-center">
         <div className="text-sm text-gray-500 space-x-1">
           <span>Showing rows:</span>
-          <select onChange={handleChangeLimit} defaultValue={5}>
+          <select onChange={handleChangeLimit} value={limit}>
             <option value={3}>3</option>
             <option value={5}>5</option>
             <option value={10}>10</option>
             <option value={20}>20</option>
           </select>
+          <span>per page</span>
         </div>
         <div className="text-sm text-gray-500">
           {currentPage} of {totalPages} in {totalCount} records
