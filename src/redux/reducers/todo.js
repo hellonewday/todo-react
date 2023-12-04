@@ -4,6 +4,7 @@ import {
   completeTodo,
   editTodo,
   fetchTodo,
+  getTodoById,
   queryTodo,
   removeTodo,
 } from "../thunk/todo";
@@ -13,6 +14,7 @@ export const todoReducer = createSlice({
   name: "todo",
   initialState: {
     todoList: [],
+    todo: {},
     apiStatus: "idle",
   },
   reducers: {
@@ -112,6 +114,16 @@ export const todoReducer = createSlice({
       })
       .addCase(queryTodo.rejected, (state, action) => {
         state.apiStatus = "error";
+      })
+      .addCase(getTodoById.pending, (state, action) => {
+        state.apiStatus = "pending";
+      })
+      .addCase(getTodoById.fulfilled, (state, action) => {
+        state.apiStatus = "fulfilled";
+        state.todo = action.payload;
+      })
+      .addCase(getTodoById.rejected, (state, action) => {
+        state.apiStatus = "rejected";
       });
   },
 });

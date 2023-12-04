@@ -18,6 +18,15 @@ export const queryTodoAPI = async (query) => {
   }
 };
 
+export const getByIdAPI = async (id) => {
+  try {
+    let response = await api.get("/lists/" + id);
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const addTodoAPI = async (newTodo) => {
   try {
     let response = await api.post("/lists", newTodo);

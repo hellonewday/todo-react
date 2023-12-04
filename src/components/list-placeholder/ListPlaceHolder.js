@@ -7,6 +7,7 @@ import {
   FaArrowUp,
   FaArrowDown,
 } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 function ListPlaceHolder(prop) {
   const { data, onDelete, onComplete, onEdit, onReverse, onSort } = prop;
@@ -104,7 +105,9 @@ function ListPlaceHolder(prop) {
           {data?.map((task) => (
             <tr key={task.id} className="border">
               <td className="border px-4 py-2 break-words">
-                <span>{task.title}</span>
+                <span>
+                  <Link to={`/todo/${task.id}`}>{task.title}</Link>
+                </span>
                 <br />
                 {task.category ? (
                   <div

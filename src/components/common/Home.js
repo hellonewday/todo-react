@@ -155,12 +155,22 @@ function Home() {
   const aggregateUtils = (criteria, value) => {
     let queryString = [];
 
-    Object.keys(searchValue).forEach((item) => {
-      if (searchValue[item].length > 0) {
-        let str = `${item}=${searchValue[item]}`;
-        queryString.push(str);
-      }
-    });
+    if (criteria !== "page") {
+      Object.keys(searchValue).forEach((item) => {
+        if (searchValue[item].length > 0 && item !== "page") {
+          let str = `${item}=${searchValue[item]}`;
+          queryString.push(str);
+        }
+      });
+      queryString.push("page=1");
+    } else {
+      Object.keys(searchValue).forEach((item) => {
+        if (searchValue[item].length > 0) {
+          let str = `${item}=${searchValue[item]}`;
+          queryString.push(str);
+        }
+      });
+    }
 
     if (Object.keys(searchValue).includes(criteria) === true) {
       queryString = queryString.filter((item) => !item.includes(criteria));
@@ -206,6 +216,7 @@ function Home() {
       let queryString = searchQuery.slice(1, searchQuery.length);
       let queryObj = Object.fromEntries(new URLSearchParams(queryString));
       setSearchValue(queryObj);
+      console.log(queryObj);
       return queryString;
     } else {
       return null;
@@ -279,7 +290,11 @@ function Home() {
                   currentPage={todoList.currentPage}
                   totalCount={todoList.count}
                   onPageChange={onPageChange}
-                  limit={limitPerPage}
+                  limit={
+                    searchValue.limit
+                      ? parseInt(searchValue.limit)
+                      : limitPerPage
+                  }
                   handleChangeLimit={onPageLimitChange}
                 />
               ) : null}
