@@ -19,6 +19,9 @@ import CreatePopup from "../create-todo/CreateTodo";
 import { SearchBar } from "../common/SearchBar";
 import { validateTodo } from "../../utils/validation.utils";
 import { Pagination } from "./Pagination";
+import {
+  useGetTodoListQuery,
+} from "../../redux/apis/todoApi";
 
 const todoTemplate = {
   title: "",
@@ -49,6 +52,10 @@ function Home() {
 
   const [invalidCreate, setInvalidCreate] = useState("");
   const [invalidUpdate, setInvalidUpdate] = useState("");
+
+  const { data, isLoading } = useGetTodoListQuery(
+    "?" + new URLSearchParams(searchValue).toString()
+  );
 
   // Create action
 
@@ -275,7 +282,7 @@ function Home() {
               />
 
               <ListPlaceHolder
-                data={todoList.data}
+                data={isLoading ? [] : data.data}
                 onDelete={onDelete}
                 listType="uncompleted"
                 onComplete={onCompleted}

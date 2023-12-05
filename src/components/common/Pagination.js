@@ -40,7 +40,7 @@ export const Pagination = (prop) => {
               }}
             >
               <button
-                onClick={() => onPageChange(currentPage - 1)}
+                onClick={() => onPageChange('page', currentPage - 1)}
                 className="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative bg-white text-red-500"
               >
                 <FaArrowLeft />
@@ -50,7 +50,7 @@ export const Pagination = (prop) => {
               return (
                 <li key={item}>
                   <button
-                    onClick={() => onPageChange(item)}
+                    onClick={() => onPageChange('page',item)}
                     className={`${
                       currentPage === item
                         ? "bg-red-500 text-white"
@@ -71,7 +71,7 @@ export const Pagination = (prop) => {
               }}
             >
               <button
-                onClick={() => onPageChange(currentPage + 1)}
+                onClick={() => onPageChange('page',currentPage + 1)}
                 className="first:ml-0 text-xs font-semibold flex w-8 h-8 mx-1 p-0 rounded-full items-center justify-center leading-tight relative bg-white text-red-500"
               >
                 <FaArrowRight />

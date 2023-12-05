@@ -21,6 +21,26 @@ export default function Navbar(prop) {
             <i className="fas fa-bars"></i>
           </button>
         </div>
+        <div
+          className={
+            "lg:flex flex-grow items-center" +
+            (navbarOpen ? " flex" : " hidden")
+          }
+          id="example-navbar-danger"
+        >
+          <ul className="flex flex-col lg:flex-row list-none lg:ml-auto">
+            <li className="nav-item">
+              <Link
+                to="/lists"
+                className="px-3 py-2 flex items-center text-xs uppercase font-bold leading-snug text-white hover:opacity-75"
+                href="#pablo"
+              >
+                <i className="fab fa-facebook-square text-lg leading-lg text-white opacity-75"></i>
+                <span className="ml-2">Tasks</span>
+              </Link>
+            </li>
+          </ul>
+        </div>
       </div>
     </nav>
   );
