@@ -77,13 +77,13 @@ function TodoList() {
   };
 
   const onCreate = (value) => {
+    setShowModal(false);
     if (Object.keys(validateTodo(value)).length > 0) {
       setInvalidCreate(validateTodo(value));
     } else {
       addTodo(value)
         .then(() => {
           setInvalidCreate(false);
-          setShowModal(false);
           setSearchValue(searchTemplate);
           navigate("/");
         })
@@ -94,6 +94,7 @@ function TodoList() {
   };
 
   const onUpdate = (value) => {
+    setShowEditModal(false);
     if (Object.keys(validateTodo(value)).length > 0) {
       setInvalidUpdate(validateTodo(value));
     } else {
@@ -108,7 +109,6 @@ function TodoList() {
 
       updateTodo(request).then(() => {
         setInvalidUpdate(false);
-        setShowEditModal(false);
         setSearchValue(searchTemplate);
         navigate("/");
       });
