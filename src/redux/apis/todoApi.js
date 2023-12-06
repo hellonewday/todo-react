@@ -1,27 +1,20 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { api } from ".";
 
-export const todoApi = createApi({
-  reducerPath: "todoApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://192.168.1.211:1234/",
-    timeout: 5000,
-  }),
-  endpoints: (builder) => ({
+export const todoApi = api.injectEndpoints({
+  endpoints: builder => ({
     getTodoById: builder.query({
       query: (name) => `lists/${name}`,
+      providesTags: (result, error, id) => [{ type: "Todo", id }],
     }),
     getTodoList: builder.query({
       query: (queryString = "") => `lists${queryString}`,
       providesTags: (result) =>
-        // is result available?
         result
-          ? // successful query
-            [
+          ? [
               ...result.data.map(({ id }) => ({ type: "Todo", id })),
-              { type: "Todo", id: "LIST" },
+              { type: "Todo", id: "PARTIAL-LIST" },
             ]
-          : // an error occurred, but we still want to refetch this query when `{ type: 'Posts', id: 'LIST' }` is invalidated
-            [{ type: "Todo", id: "LIST" }],
+          : [{ type: "Todo", id: "PARTIAL-LIST" }],
     }),
     addTodo: builder.mutation({
       query: ({ ...todo }) => ({
@@ -29,7 +22,7 @@ export const todoApi = createApi({
         method: "POST",
         body: todo,
       }),
-      providesTags: (result, error, id) => [{ type: "Todo", id }],
+      invalidatesTags: [{ type: "Todo", id: "PARTIAL-LIST" }],
     }),
     updateTodo: builder.mutation({
       query: ({ id, ...todo }) => ({
@@ -37,10 +30,40 @@ export const todoApi = createApi({
         method: "PATCH",
         body: todo,
       }),
-      providesTags: (result, error, id) => [{ type: "Todo", id }],
+      invalidatesTags: (result, error, { id }) => [{ type: "Todo", id }],
     }),
-  }),
+    completeTodo: builder.mutation({
+      query: (id) => ({
+        url: `lists/${id}`,
+        method: "PATCH",
+        body: {
+          completed: true,
+          progress: 100,
+        },
+      }),
+      invalidatesTags: (result, error, id) => [
+        { type: "Todo", id },
+        { type: "Todo", id: "PARTIAL-LIST" },
+      ],
+    }),
+    deleteTodo: builder.mutation({
+      query: (id) => ({
+        url: `lists/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, id) => [
+        { type: "Todo", id },
+        { type: "Todo", id: "PARTIAL-LIST" },
+      ],
+    }),
+  })
 });
 
-export const { useGetTodoListQuery, useGetTodoByIdQuery, useAddTodoMutation } =
-  todoApi;
+export const {
+  useGetTodoListQuery,
+  useGetTodoByIdQuery,
+  useAddTodoMutation,
+  useUpdateTodoMutation,
+  useCompleteTodoMutation,
+  useDeleteTodoMutation,
+} = todoApi;

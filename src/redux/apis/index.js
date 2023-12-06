@@ -1,11 +1,15 @@
-import axios from "axios";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
-  timeout: 1000,
-  headers: { "Content-Type": "application/json" },
+const baseQuery = fetchBaseQuery({
+  baseUrl: process.env.REACT_APP_API_URL,
+  timeout: 5000,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-
-
-export default api;
+export const api = createApi({
+  baseQuery,
+  tagTypes: ["Todo", "Comment", "Label"],
+  endpoints: (builder) => ({}),
+});

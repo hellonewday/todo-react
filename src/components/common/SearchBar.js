@@ -1,4 +1,4 @@
-import { FaEraser, FaPlus, FaSearch } from "react-icons/fa";
+import { FaEraser, FaPlus } from "react-icons/fa";
 import Button from "./Button";
 
 export function SearchBar(prop) {
@@ -6,7 +6,6 @@ export function SearchBar(prop) {
     labels,
     onChange,
     searchValue,
-    handleSearch,
     handlePopCreate,
     handleReset,
   } = prop;
@@ -86,14 +85,6 @@ export function SearchBar(prop) {
         </div>
       </div>
       <div className="col-span-1 flex space-x-2">
-        <Button
-          theme="primary"
-          styles={"search-btn"}
-          handleClick={handleSearch}
-        >
-          <FaSearch /> <span>Search</span>
-        </Button>
-
         <Button theme="default" styles={"search-btn"} handleClick={handleReset}>
           <FaEraser />
           <span>Reset</span>

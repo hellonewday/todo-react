@@ -1,5 +1,5 @@
 const InputText = (prop) => {
-  const { labelName, isFormInvalid, ...formProps } = prop;
+  const { labelName, isFormInvalid, inputRef, ...formProps } = prop;
   return (
     <>
       <label
@@ -12,6 +12,7 @@ const InputText = (prop) => {
       </label>
       <input
         type="text"
+        ref={inputRef}
         className={`w-80 md:w-96 text-sm
                       ${
                         isFormInvalid !== undefined

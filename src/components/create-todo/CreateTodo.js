@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { addLabel, fetchLabels } from "../../redux/thunk/labels";
+import { useEffect, useRef, useState } from "react";
 import { TwitterPicker } from "react-color";
 import { validateLabel } from "../../utils/validation.utils";
 import InputText from "../common/InputText";
 import Button from "../common/Button";
+import {
+  useAddLabelMutation,
+  useGetLabelsQuery,
+} from "../../redux/apis/labelApi";
 
 const categoryTemplate = {
   name: "",
@@ -30,14 +32,16 @@ export default function CreatePopup(prop) {
     saveButtonName,
   } = prop;
 
-  const dispatch = useDispatch();
-
-  const { labels, apiLabelStatus } = useSelector((state) => state.labels);
+  const { data } = useGetLabelsQuery();
+  const [addCategory] = useAddLabelMutation();
 
   const [category, setCategory] = useState(categoryTemplate);
   const [isCreate, setIsCreate] = useState(false);
   const [formValue, setFormValue] = useState(todo || todoTemplate);
   const [categoryMsg, setCategoryMsg] = useState("");
+
+  const titleRef = useRef();
+  const categoryRef = useRef();
 
   const onFormValueChange = (event) => {
     setFormValue({ ...formValue, [event.target.name]: event.target.value });
@@ -45,6 +49,7 @@ export default function CreatePopup(prop) {
 
   const onFormValueSave = (event) => {
     event.preventDefault();
+
     onCreateSave(formValue);
   };
 
@@ -55,11 +60,16 @@ export default function CreatePopup(prop) {
   const onCategorySave = (event) => {
     event.preventDefault();
     if (Object.keys(validateLabel(category.name)).length > 0) {
+      categoryRef.current.focus();
       setCategoryMsg(validateLabel(category.name).name);
     } else {
-      dispatch(addLabel(category));
-      setCategory(categoryTemplate);
-      setCategoryMsg("");
+      addCategory(category).then((response) => {
+        console.log(response.data.data.id);
+        setFormValue({ ...formValue, category: response.data.data.id });
+        setCategory(categoryTemplate);
+        setIsCreate(!isCreate);
+        setCategoryMsg("");
+      });
     }
   };
 
@@ -76,16 +86,6 @@ export default function CreatePopup(prop) {
     setIsCreate(false);
     onShowModal(false);
   };
-
-  useEffect(() => {
-    dispatch(fetchLabels());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (apiLabelStatus === "fulfilled") {
-      setIsCreate(false);
-    }
-  }, [apiLabelStatus]);
 
   useEffect(() => {
     if (showModal && todo) {
@@ -119,6 +119,7 @@ export default function CreatePopup(prop) {
                     <InputText
                       name="title"
                       labelName={"Task Name"}
+                      inputRef={titleRef}
                       placeholder="Type task name"
                       isFormInvalid={isFormInvalid?.title}
                       onChange={onFormValueChange}
@@ -143,13 +144,13 @@ export default function CreatePopup(prop) {
                       <select
                         onChange={onFormValueChange}
                         name="category"
-                        value={formValue.category ? formValue.category._id : ""}
+                        value={formValue?.category}
                         className=" bg-gray-200 border border-gray-200 text-gray-700 focus:bg-white focus:border-gray-500
                         py-3 px-4 pr-8 rounded leading-tight focus:outline-none block appearance-none w-full"
                         id="grid-state"
                       >
                         <option value="">-- Choose a option</option>
-                        {labels.map((item) => {
+                        {data.data.map((item) => {
                           return (
                             <option key={item.id} value={item.id}>
                               {item.name}
@@ -182,6 +183,7 @@ export default function CreatePopup(prop) {
                           placeholder="Category name"
                           onChange={onCategoryChange}
                           name="name"
+                          ref={categoryRef}
                           value={category.name || ""}
                         />
 
