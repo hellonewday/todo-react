@@ -15,7 +15,7 @@ import Swal from "sweetalert2";
 import CreatePopup from "../create-todo/CreateTodo";
 import { validateTodo } from "../../utils/validation.utils";
 import { ToastContainer } from "react-toastify";
-import AtomicSpinner from "atomic-spinner";
+import { Loading } from "./Loading";
 
 const todoTemplate = {
   title: "",
@@ -278,7 +278,15 @@ function TodoList() {
   }, [location]);
 
   if (isTodoLoading) {
-    return <div className="text-center font-bold">Loading...</div>;
+    return (
+      <Loading
+        atomSize={400}
+        electronPathWidth={1.5}
+        electronPathColor={"#1f85ce"}
+        nucleusParticleFillColor={"#1b247b"}
+        nucleusParticleBorderColor={"#49d2cf"}
+      />
+    );
   }
 
   if (todoError) {
@@ -307,17 +315,13 @@ function TodoList() {
           isUpdateLoading ||
           isCompleteLoading ||
           isDeleteLoading ? (
-            <div className="opacity-25 fixed inset-0 z-40 bg-black">
-              <div className="overlay">
-                <AtomicSpinner
-                  atomSize={400}
-                  electronPathWidth={1.5}
-                  electronPathColor={"#1f85ce"}
-                  nucleusParticleFillColor={"#1b247b"}
-                  nucleusParticleBorderColor={"#49d2cf"}
-                />
-              </div>
-            </div>
+            <Loading
+              atomSize={400}
+              electronPathWidth={1.5}
+              electronPathColor={"#1f85ce"}
+              nucleusParticleFillColor={"#1b247b"}
+              nucleusParticleBorderColor={"#49d2cf"}
+            />
           ) : null}
 
           <div className="main-container py-3">
